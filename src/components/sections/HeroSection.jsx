@@ -133,7 +133,7 @@ const HeroSection = () => {
 
   return (
     <section 
-      className="intro bg-white text-black min-h-screen flex items-center relative"
+      className="intro min-h-screen flex items-center relative"
       aria-label="Hero section introducing Akash Yadav with elegant headphone animation"
       role="banner"
       style={{ paddingTop: '80px', overflow: 'visible' }}
