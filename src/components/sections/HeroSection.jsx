@@ -189,7 +189,7 @@ const HeroSection = () => {
           }}
         >
           <motion.img
-            src="/assets/65f98e4457aed29707e9f5bf_profile-pic.png"
+            src="/assets/akash-profile.jpg"
             alt="Akash Yadav - Portfolio Picture"
             className="image object-cover rounded-lg shadow-lg relative z-10"
             style={{

@@ -15,9 +15,9 @@ export const portfolioData = {
     location: 'Kota, Rajasthan',
     education: 'IIT Bombay',
     profileImages: [
-      '/assets/65f98e4457aed29707e9f5bf_profile-pic.png',
-      '/assets/65f98e4457aed29707e9f5bf_profile-pic.png',
-      '/assets/65f98e4457aed29707e9f5bf_profile-pic.png'
+      '/assets/akash-profile.jpg',
+      '/assets/akash-profile.jpg',
+      '/assets/akash-profile.jpg'
     ],
     socialLinks: [
       {
