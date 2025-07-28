@@ -1,6 +1,6 @@
 @import "tailwindcss";
-/* Optimized font loading - only load weights we actually use */
-@import url('https://fonts.googleapis.com/css2?family=Exo:wght@400;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap');
+/* Optimized font loading - restore all weights for visual consistency */
+@import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Varela:wght@400&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 /* Custom CSS variables and base styles */
 :root {
@@ -506,19 +506,30 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Improve text readability on small screens */
+/* Improve text readability on small screens - keep original font size */
 @media (max-width: 480px) {
+  /* Keep original 14px font size for visual consistency */
   body {
-    font-size: 16px; /* Prevent zoom on iOS */
+    font-size: 14px;
     line-height: 1.5;
   }
   
-  /* Ensure proper spacing for touch */
+  /* Ensure proper spacing for touch - keep original visual size */
   .work-dot,
   .blog-dot {
-    min-width: 44px;
-    min-height: 44px;
-    padding: 18px;
+    /* Keep original visual size but ensure touch area */
+    position: relative;
+  }
+  
+  .work-dot::after,
+  .blog-dot::after {
+    content: '';
+    position: absolute;
+    top: -18px;
+    left: -18px;
+    right: -18px;
+    bottom: -18px;
+    /* Invisible touch area - doesn't affect visual appearance */
   }
   
   /* Better mobile typography */
@@ -687,22 +698,32 @@ Critical CSS optimizations */
   will-change: auto;
 }
 
-/* Optimize typography rendering */
+/* Optimize typography rendering - keep original quality */
 body {
-  text-rendering: optimizeSpeed;
+  text-rendering: optimizeLegibility; /* Restore original quality */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Critical path optimization */
-.intro .center-image img {
-  loading: eager;
+/* Critical path optimization - ensure hero images load immediately */
+.intro .center-image img,
+.intro img,
+.h2---section---about img {
+  loading: eager !important;
   fetchpriority: high;
 }
 
-/* Defer non-critical images */
-.work-image:not(.critical),
-.blog-image:not(.critical) {
+/* Only defer work/blog section images */
+.work-image,
+.blog-image {
   loading: lazy;
   decoding: async;
+}
+
+/* Remove lazy loading from performance optimizations to avoid visual delays */
+.work-image,
+.blog-image {
+  content-visibility: auto;
+  contain-intrinsic-size: 300px 200px;
+  /* Remove: loading: lazy; - let individual components control this */
 }

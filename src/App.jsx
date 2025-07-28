@@ -21,10 +21,10 @@ function App() {
     initAnalytics();
     initPerformanceMonitoring();
     
-    // Optimize loading time - reduce from 2s to 1s
+    // Keep original loading time for visual consistency
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, []);
