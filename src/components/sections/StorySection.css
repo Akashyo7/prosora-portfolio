@@ -1,0 +1,125 @@
+/* Story Section Styles - Matching Original Website */
+
+/* Inherits most styles from AboutSection.css but with story-specific adjustments */
+
+.story-section .h2---section---about {
+  background: #fff;
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.story-section .h2---text {
+  font-family: 'Exo', sans-serif;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: #000;
+}
+
+.story-section .paragraph {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.story-section .about-section {
+  background: #fff;
+  padding: 3rem 0;
+}
+
+.story-section .text-block-3 {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #374151;
+  max-width: none;
+}
+
+.story-section .text-block-3 p {
+  margin-bottom: 1.5rem;
+}
+
+.story-section .text-block-3 a {
+  color: #2563eb;
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.story-section .text-block-3 a:hover {
+  color: #1d4ed8;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 991px) {
+  .story-section .h2---section---about {
+    padding: 3rem 0;
+  }
+  
+  .story-section .h2---text {
+    font-size: 4rem;
+  }
+  
+  .story-section .paragraph {
+    font-size: 1rem;
+  }
+  
+  .story-section .about-section {
+    padding: 2rem 0;
+  }
+  
+  .story-section .text-block-3 {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .story-section .h2---section---about {
+    padding: 2rem 0;
+  }
+  
+  .story-section .h2---text {
+    font-size: 3rem;
+  }
+  
+  .story-section .paragraph {
+    font-size: 0.875rem;
+  }
+  
+  .story-section .about-section {
+    padding: 1.5rem 0;
+  }
+  
+  .story-section .text-block-3 {
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .story-section .h2---section---about {
+    padding: 1.5rem 0;
+  }
+  
+  .story-section .h2---text {
+    font-size: 2.5rem;
+  }
+  
+  .story-section .paragraph {
+    font-size: 0.75rem;
+  }
+  
+  .story-section .about-section {
+    padding: 1rem 0;
+  }
+  
+  .story-section .text-block-3 {
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+}
+
+/* Yellow accent color matching original */
+.story-section .h2---text span {
+  color: #f8cb74;
+}

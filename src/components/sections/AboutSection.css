@@ -1,0 +1,174 @@
+/* About Section Styles - Matching Original Website */
+
+.h2---section---about {
+  background: #fff;
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.h2---link-block {
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.h2---link-block:hover {
+  transform: translateY(-2px);
+}
+
+.h2---text {
+  font-family: 'Exo', sans-serif;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: #000;
+}
+
+.h2---o {
+  margin-top: 1rem;
+}
+
+.h2---o.about {
+  max-width: 32rem;
+  margin: 1rem auto 0;
+}
+
+.paragraph {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: #f8cb74;
+  font-weight: 500;
+}
+
+.about-section {
+  background: #fff;
+  padding: 3rem 0;
+}
+
+.text-block-3 {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #374151;
+  max-width: none;
+}
+
+.text-block-3 p {
+  margin-bottom: 1.5rem;
+}
+
+.text-block-3 a {
+  color: #2563eb;
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.text-block-3 a:hover {
+  color: #1d4ed8;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 991px) {
+  .h2---section---about {
+    padding: 3rem 0;
+  }
+  
+  .h2---text {
+    font-size: 4rem;
+  }
+  
+  .paragraph {
+    font-size: 1rem;
+  }
+  
+  .about-section {
+    padding: 2rem 0;
+  }
+  
+  .text-block-3 {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .h2---section---about {
+    padding: 2rem 0;
+  }
+  
+  .h2---text {
+    font-size: 3rem;
+  }
+  
+  .paragraph {
+    font-size: 0.875rem;
+  }
+  
+  .about-section {
+    padding: 1.5rem 0;
+  }
+  
+  .text-block-3 {
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .h2---section---about {
+    padding: 1.5rem 0;
+  }
+  
+  .h2---text {
+    font-size: 2.5rem;
+  }
+  
+  .paragraph {
+    font-size: 0.75rem;
+  }
+  
+  .about-section {
+    padding: 1rem 0;
+  }
+  
+  .text-block-3 {
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+  
+  .h2---o.about {
+    max-width: 20rem;
+  }
+}
+
+/* Animation Enhancements */
+.h2---text {
+  transition: transform 0.3s ease;
+}
+
+.h2---text:hover {
+  transform: scale(1.02);
+}
+
+.text-block-3 p {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.text-block-3 p:hover {
+  transform: translateX(4px);
+}
+
+/* Yellow accent color matching original */
+.h2---text span {
+  color: #f8cb74;
+}
+
+/* Ensure proper spacing and typography */
+.about-section .container {
+  max-width: 1200px;
+}
+
+.text-block-3 {
+  text-align: left;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}

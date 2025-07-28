@@ -1,0 +1,40 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://akash-portfolio.vercel.app/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# Disallow certain file types that shouldn't be indexed
+Disallow: *.json$
+Disallow: *.xml$
+Disallow: /assets/*.json
+Disallow: /node_modules/
+Disallow: /src/
+Disallow: /.git/
+Disallow: /.vscode/
+
+# Allow important assets
+Allow: /assets/*.jpg
+Allow: /assets/*.png
+Allow: /assets/*.gif
+Allow: /assets/*.webp
+Allow: /assets/*.svg

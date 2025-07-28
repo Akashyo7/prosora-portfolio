@@ -1,0 +1,199 @@
+/* Hero/Intro Section Styles - Matching Original Website */
+
+.intro {
+  background: #000;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 5rem 0;
+}
+
+.center-image-mobile {
+  display: block;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.center-image-mobile img {
+  width: 100%;
+  max-width: 24rem;
+  margin: 0 auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.center-image-mobile img:nth-child(2) {
+  margin-top: 1rem;
+}
+
+.intro_left {
+  text-align: center;
+}
+
+.intro_right {
+  text-align: center;
+}
+
+.center-image {
+  display: none;
+  justify-content: center;
+  position: relative;
+}
+
+.center-image .image {
+  width: 20rem;
+  height: 20rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.center-image .image-2 {
+  position: absolute;
+  bottom: -1rem;
+  right: -1rem;
+  width: 8rem;
+  height: 8rem;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid white;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.heading,
+.heading-2 {
+  font-family: 'Exo', sans-serif;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.paragraph-2,
+.paragraph-3 {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: #d1d5db;
+  max-width: 28rem;
+  margin: 0 auto;
+}
+
+/* Desktop Layout */
+@media screen and (min-width: 768px) {
+  .intro {
+    padding: 0;
+  }
+  
+  .center-image-mobile {
+    display: none;
+  }
+  
+  .center-image {
+    display: flex;
+  }
+  
+  .intro_left {
+    text-align: right;
+  }
+  
+  .intro_right {
+    text-align: left;
+  }
+  
+  .paragraph-2,
+  .paragraph-3 {
+    margin: 0;
+  }
+}
+
+/* Large Desktop */
+@media screen and (min-width: 1024px) {
+  .heading,
+  .heading-2 {
+    font-size: 4rem;
+  }
+  
+  .paragraph-2,
+  .paragraph-3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Extra Large Desktop */
+@media screen and (min-width: 1280px) {
+  .heading,
+  .heading-2 {
+    font-size: 5rem;
+  }
+  
+  .center-image .image {
+    width: 24rem;
+    height: 24rem;
+  }
+  
+  .center-image .image-2 {
+    width: 10rem;
+    height: 10rem;
+  }
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 767px) {
+  .intro {
+    padding: 2rem 0;
+  }
+  
+  .heading,
+  .heading-2 {
+    font-size: 2.5rem;
+  }
+  
+  .paragraph-2,
+  .paragraph-3 {
+    font-size: 1rem;
+    max-width: 20rem;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .heading,
+  .heading-2 {
+    font-size: 2rem;
+  }
+  
+  .paragraph-2,
+  .paragraph-3 {
+    font-size: 0.875rem;
+    max-width: 18rem;
+  }
+  
+  .center-image-mobile img {
+    max-width: 20rem;
+  }
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.scroll-indicator .scroll-mouse {
+  width: 1.5rem;
+  height: 2.5rem;
+  border: 2px solid white;
+  border-radius: 1.25rem;
+  display: flex;
+  justify-content: center;
+}
+
+.scroll-indicator .scroll-wheel {
+  width: 0.25rem;
+  height: 0.75rem;
+  background: white;
+  border-radius: 0.125rem;
+  margin-top: 0.5rem;
+}
