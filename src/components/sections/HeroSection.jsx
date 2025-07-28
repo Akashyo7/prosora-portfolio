@@ -136,7 +136,7 @@ const HeroSection = () => {
       className="intro min-h-screen flex items-center relative"
       aria-label="Hero section introducing Akash Yadav with elegant headphone animation"
       role="banner"
-      style={{ paddingTop: '80px', overflow: 'visible' }}
+      style={{ paddingTop: '80px', overflow: 'visible', backgroundColor: '#000', color: '#fff' }}
       aria-live={shouldDisableAnimations ? "polite" : "off"}
     >
       {/* Desktop Layout - Horizontal three-column layout */}
@@ -156,7 +156,8 @@ const HeroSection = () => {
         
         {/* Left Section - Strategy & Analytics */}
         <motion.div 
-          className="intro_left flex-1 text-right px-8 py-6 bg-black text-white rounded-lg shadow-lg mx-6"
+          className="intro_left flex-1 text-right px-8 py-6 rounded-lg shadow-lg mx-6"
+          style={{ backgroundColor: '#000', color: '#fff' }}
           initial={shouldDisableAnimations ? { opacity: 1 } : { opacity: 0, x: -60 }}
           animate={{ opacity: 1, x: 0 }}
           transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -565,7 +566,8 @@ const HeroSection = () => {
 
         {/* Right Section - Product & Marketing */}
         <motion.div 
-          className="intro_right flex-1 text-left px-8 py-6 bg-black text-white rounded-lg shadow-lg mx-6"
+          className="intro_right flex-1 text-left px-8 py-6 rounded-lg shadow-lg mx-6"
+          style={{ backgroundColor: '#000', color: '#fff' }}
           initial={shouldDisableAnimations ? { opacity: 1 } : { opacity: 0, x: 60 }}
           animate={{ opacity: 1, x: 0 }}
           transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.8, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
