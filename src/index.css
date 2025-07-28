@@ -1,5 +1,6 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Varela:wght@400&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+/* Optimized font loading - only load weights we actually use */
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@400;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap');
 
 /* Custom CSS variables and base styles */
 :root {
@@ -587,6 +588,24 @@ h1, h2, h3, h4, h5, h6 {
 .blog-image {
   content-visibility: auto;
   contain-intrinsic-size: 300px 200px;
+  loading: lazy; /* Native lazy loading */
+}
+
+/* Intersection Observer fallback for older browsers */
+.lazy-image {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.lazy-image.loaded {
+  opacity: 1;
+}
+
+/* Optimize GIF loading */
+.work-image[src$=".gif"],
+.blog-image[src$=".gif"] {
+  will-change: auto;
+  transform: translateZ(0); /* Force GPU acceleration */
 }
 
 /* Smooth scrolling with reduced motion support */
@@ -614,4 +633,76 @@ h1, h2, h3, h4, h5, h6 {
 @keyframes loading {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}/* 
+Critical CSS optimizations */
+
+/* Prevent layout shift during font loading */
+.h2---text,
+.heading,
+.heading-2 {
+  font-display: swap;
+  font-variation-settings: 'wght' 700;
+}
+
+/* Optimize animations for performance */
+@media (prefers-reduced-motion: no-preference) {
+  .work-card,
+  .blog-card {
+    will-change: transform;
+  }
+  
+  .work-card:hover,
+  .blog-card:hover {
+    will-change: auto;
+  }
+}
+
+/* Optimize scroll performance */
+.work-cards-container,
+.blog-cards-container {
+  contain: layout style paint;
+}
+
+/* Preload critical above-the-fold content */
+.intro,
+.h2---section---about {
+  contain: layout;
+}
+
+/* Optimize image containers */
+.work-image-wrapper,
+.blog-image-wrapper {
+  contain: layout size;
+  content-visibility: auto;
+}
+
+/* Performance hints for animations */
+.work-dot,
+.blog-dot {
+  will-change: transform, background-color;
+}
+
+.work-dot:not(:hover),
+.blog-dot:not(:hover) {
+  will-change: auto;
+}
+
+/* Optimize typography rendering */
+body {
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Critical path optimization */
+.intro .center-image img {
+  loading: eager;
+  fetchpriority: high;
+}
+
+/* Defer non-critical images */
+.work-image:not(.critical),
+.blog-image:not(.critical) {
+  loading: lazy;
+  decoding: async;
 }

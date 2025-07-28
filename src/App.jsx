@@ -10,6 +10,7 @@ import ContactSection from './components/sections/ContactSection';
 import BlogSection from './components/blog/BlogSection';
 import { MusicProvider } from './contexts/MusicContext';
 import { initAnalytics } from './utils/analytics.js';
+import { initPerformanceMonitoring } from './utils/performance.js';
 import './App.css';
 
 function App() {
@@ -18,11 +19,12 @@ function App() {
   // Initialize analytics and performance monitoring
   useEffect(() => {
     initAnalytics();
+    initPerformanceMonitoring();
     
-    // Simulate loading time and hide preloader
+    // Optimize loading time - reduce from 2s to 1s
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);

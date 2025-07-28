@@ -32,20 +32,33 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
       },
       output: {
-        // Manual chunks for better caching
-        manualChunks: {
+        // Optimized manual chunks for better caching and loading
+        manualChunks: (id) => {
           // Vendor chunks
-          'react-vendor': ['react', 'react-dom'],
-          'framer-motion': ['framer-motion'],
-          'lucide-react': ['lucide-react'],
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
+            }
+            if (id.includes('framer-motion')) {
+              return 'framer-motion';
+            }
+            if (id.includes('lucide-react')) {
+              return 'lucide-react';
+            }
+            // Other vendor libraries
+            return 'vendor';
+          }
           
-          // Utility chunks
-          'utils': [
-            './src/utils/contentLoader.js',
-            './src/utils/assetManager.js',
-            './src/utils/accessibility.js',
-            './src/utils/seo.js'
-          ]
+          // Component chunks
+          if (id.includes('/components/sections/')) {
+            return 'sections';
+          }
+          if (id.includes('/components/')) {
+            return 'components';
+          }
+          if (id.includes('/utils/')) {
+            return 'utils';
+          }
         },
         
         // Asset file naming
