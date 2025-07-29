@@ -1,5 +1,12 @@
 /* Timeline Section Styles - Matching Original Website */
 
+/* CSS Custom Properties for Precise Alignment */
+:root {
+  --timeline-heading-font-size: 1.125rem;
+  --timeline-heading-line-height: 1.4;
+  --timeline-heading-offset: calc(var(--timeline-heading-font-size) * var(--timeline-heading-line-height) * 0.5);
+}
+
 /* Timeline Header - inherits from AboutSection styles */
 .timeline .h2---section---about {
   background: #fff;
@@ -89,8 +96,9 @@
 .timeline_center {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
+  padding-top: var(--timeline-heading-offset);
 }
 
 .timeline_circle {
@@ -130,7 +138,8 @@
   font-weight: 600;
   color: #111827;
   margin-bottom: 0.5rem;
-  font-size: 1.125rem;
+  font-size: var(--timeline-heading-font-size);
+  line-height: var(--timeline-heading-line-height);
 }
 
 .timeline_text p {
@@ -140,6 +149,12 @@
 
 /* Responsive Design */
 @media screen and (max-width: 991px) {
+  :root {
+    --timeline-heading-font-size: 1rem;
+    --timeline-heading-line-height: 1.4;
+    --timeline-heading-offset: calc(var(--timeline-heading-font-size) * var(--timeline-heading-line-height) * 0.5);
+  }
+  
   .timeline {
     padding: 3rem 0;
   }
@@ -158,7 +173,8 @@
   }
   
   .timeline_text h3 {
-    font-size: 1rem;
+    font-size: var(--timeline-heading-font-size);
+    line-height: var(--timeline-heading-line-height);
   }
   
   .timeline_text p {
@@ -167,6 +183,12 @@
 }
 
 @media screen and (max-width: 767px) {
+  :root {
+    --timeline-heading-font-size: 0.875rem;
+    --timeline-heading-line-height: 1.4;
+    --timeline-heading-offset: calc(var(--timeline-heading-font-size) * var(--timeline-heading-line-height) * 0.5);
+  }
+  
   .timeline {
     padding: 2rem 0;
   }
@@ -197,6 +219,7 @@
     align-items: flex-start;
     margin-right: 1rem;
     position: relative;
+    padding-top: var(--timeline-heading-offset);
   }
   
   .timeline_right {
@@ -214,7 +237,7 @@
     width: 0.75rem;
     height: 0.75rem;
     position: relative;
-    top: -0.125rem; /* Move up to align with h3 "IIT Bombay" text */
+    top: 0; /* Remove manual offset, use padding-top instead */
   }
   
   .timeline_date_text {
@@ -222,7 +245,8 @@
   }
   
   .timeline_text h3 {
-    font-size: 0.875rem;
+    font-size: var(--timeline-heading-font-size);
+    line-height: var(--timeline-heading-line-height);
   }
   
   .timeline_text p {
