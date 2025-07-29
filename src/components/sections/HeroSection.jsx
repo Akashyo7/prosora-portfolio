@@ -139,30 +139,14 @@ const HeroSection = () => {
       style={{ paddingTop: '80px', overflow: 'visible', backgroundColor: '#000', color: '#fff' }}
       aria-live={shouldDisableAnimations ? "polite" : "off"}
     >
-      {/* Desktop Layout - Horizontal three-column layout */}
-      <div 
-        className="w-full px-0 max-w-none mx-auto"
-        style={{ 
-          display: 'flex', 
-          flexDirection: 'row', 
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
-          minHeight: '60vh',
-          gap: '1.5rem',
-          overflow: 'visible' // Allow headphones to extend beyond container
-        }}
-      >
+      {/* Responsive Layout - Three-column on all devices */}
+      <div className="hero-container">
+        
+      
         
         {/* Left Section - Strategy & Analytics */}
         <motion.div 
-          className="intro_left flex-1 text-right rounded-lg shadow-lg"
-          style={{ 
-            backgroundColor: '#000', 
-            color: '#fff',
-            padding: 'var(--hero-text-padding)',
-            margin: `0 calc(var(--hero-text-margin) * var(--spacing-scale))`
-          }}
+          className="intro_left hero-text-block"
           initial={shouldDisableAnimations ? { opacity: 1 } : { opacity: 0, x: -60 }}
           animate={{ opacity: 1, x: 0 }}
           transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -185,7 +169,7 @@ const HeroSection = () => {
 
         {/* Center - Single Portfolio Image with Headphone Animation */}
         <motion.div 
-          className="center-image flex-shrink-0 relative"
+          className="center-image hero-image-container"
           initial={shouldDisableAnimations ? { opacity: 1 } : { opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.8, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -197,12 +181,7 @@ const HeroSection = () => {
             src="/assets/akash-profile.jpg"
             alt="Akash Yadav - Portfolio Picture"
             className="image object-cover rounded-lg shadow-lg relative z-10"
-            style={{
-              width: 'var(--hero-image-size)',
-              height: 'var(--hero-image-size)',
-              minWidth: 'var(--hero-image-size)',
-              minHeight: 'var(--hero-image-size)'
-            }}
+            className="hero-profile-image"
             whileHover={shouldDisableAnimations ? {} : { scale: 1.02 }}
             transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
             loading="eager"
@@ -571,13 +550,7 @@ const HeroSection = () => {
 
         {/* Right Section - Product & Marketing */}
         <motion.div 
-          className="intro_right flex-1 text-left rounded-lg shadow-lg"
-          style={{ 
-            backgroundColor: '#000', 
-            color: '#fff',
-            padding: 'var(--hero-text-padding)',
-            margin: `0 calc(var(--hero-text-margin) * var(--spacing-scale))`
-          }}
+          className="intro_right hero-text-block"
           initial={shouldDisableAnimations ? { opacity: 1 } : { opacity: 0, x: 60 }}
           animate={{ opacity: 1, x: 0 }}
           transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.8, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}

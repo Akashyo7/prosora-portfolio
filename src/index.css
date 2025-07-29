@@ -497,23 +497,127 @@ h1, h2, h3, h4, h5, h6 {
   mask-composite: intersect;
 }
 
-/* Better mobile spacing */
-@media (max-width: 768px) {
-  .heading-2, .heading {
-    font-size: 2.5rem;
+/* Hero Section Responsive Layout */
+.hero-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 60vh;
+  gap: 2rem;
+  padding: 0 2rem;
+}
+
+.hero-text-block {
+  flex: 1;
+  background-color: #000;
+  color: #fff;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.intro_left {
+  text-align: right;
+}
+
+.intro_right {
+  text-align: left;
+}
+
+.hero-image-container {
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-profile-image {
+  width: 20rem;
+  height: 20rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Tablet Responsive */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .hero-container {
+    gap: 1.5rem;
+    padding: 0 1.5rem;
   }
   
+  .hero-text-block {
+    padding: 1.5rem;
+  }
+  
+  .hero-profile-image {
+    width: 16rem;
+    height: 16rem;
+  }
+  
+  .heading-2, .heading {
+    font-size: 2.8rem;
+  }
+  
+  .paragraph-2, .paragraph-3 {
+    font-size: 1rem;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+  .intro {
+    padding-top: 6rem; /* Account for fixed navbar */
+    padding-bottom: 2rem;
+    min-height: 100vh;
+  }
+  
+  .hero-container {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 0 1rem;
+    text-align: center;
+  }
+  
+  .hero-text-block {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  .intro_left, .intro_right {
+    text-align: center;
+  }
+  
+  .hero-profile-image {
+    width: 12rem;
+    height: 12rem;
+    margin: 0 auto;
+  }
+  
+  .heading-2, .heading {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .paragraph-2, .paragraph-3 {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}
+
+/* Better mobile spacing */
+@media (max-width: 768px) {
   .h2---text {
     font-size: 3rem;
   }
   
   .block-quote {
     font-size: 2rem;
-  }
-  
-  .intro {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
   }
   
   .h2---section---about {
