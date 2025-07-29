@@ -156,8 +156,13 @@ const HeroSection = () => {
         
         {/* Left Section - Strategy & Analytics */}
         <motion.div 
-          className="intro_left flex-1 text-right px-8 py-6 rounded-lg shadow-lg mx-6"
-          style={{ backgroundColor: '#000', color: '#fff' }}
+          className="intro_left flex-1 text-right rounded-lg shadow-lg"
+          style={{ 
+            backgroundColor: '#000', 
+            color: '#fff',
+            padding: 'var(--hero-text-padding)',
+            margin: `0 calc(var(--hero-text-margin) * var(--spacing-scale))`
+          }}
           initial={shouldDisableAnimations ? { opacity: 1 } : { opacity: 0, x: -60 }}
           animate={{ opacity: 1, x: 0 }}
           transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -193,10 +198,10 @@ const HeroSection = () => {
             alt="Akash Yadav - Portfolio Picture"
             className="image object-cover rounded-lg shadow-lg relative z-10"
             style={{
-              width: '28rem',
-              height: '28rem',
-              minWidth: '28rem',
-              minHeight: '28rem'
+              width: 'var(--hero-image-size)',
+              height: 'var(--hero-image-size)',
+              minWidth: 'var(--hero-image-size)',
+              minHeight: 'var(--hero-image-size)'
             }}
             whileHover={shouldDisableAnimations ? {} : { scale: 1.02 }}
             transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -224,10 +229,10 @@ const HeroSection = () => {
             <motion.div 
               style={{
                 position: 'absolute',
-                top: '100px',
-                left: '-500px', // Perfect screen edge position
-                width: '160px',
-                height: '200px',
+                top: `calc(100px * var(--headphone-scale))`,
+                left: `calc(-1 * var(--headphone-position-offset))`, // Responsive screen edge position
+                width: `calc(160px * var(--headphone-scale))`,
+                height: `calc(200px * var(--headphone-scale))`,
                 background: 'linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.4))',
                 borderRadius: '80px 80px 100px 100px',
                 filter: 'blur(2px)',
@@ -296,10 +301,10 @@ const HeroSection = () => {
             <motion.div 
               style={{
                 position: 'absolute',
-                top: '100px',
-                right: '-520px', // Perfect screen edge position
-                width: '160px',
-                height: '200px',
+                top: `calc(100px * var(--headphone-scale))`,
+                right: `calc(-1 * var(--headphone-position-offset) - 20px)`, // Responsive screen edge position
+                width: `calc(160px * var(--headphone-scale))`,
+                height: `calc(200px * var(--headphone-scale))`,
                 background: 'linear-gradient(225deg, rgba(0,0,0,0.7), rgba(0,0,0,0.4))',
                 borderRadius: '80px 80px 100px 100px',
                 filter: 'blur(2px)',
@@ -566,8 +571,13 @@ const HeroSection = () => {
 
         {/* Right Section - Product & Marketing */}
         <motion.div 
-          className="intro_right flex-1 text-left px-8 py-6 rounded-lg shadow-lg mx-6"
-          style={{ backgroundColor: '#000', color: '#fff' }}
+          className="intro_right flex-1 text-left rounded-lg shadow-lg"
+          style={{ 
+            backgroundColor: '#000', 
+            color: '#fff',
+            padding: 'var(--hero-text-padding)',
+            margin: `0 calc(var(--hero-text-margin) * var(--spacing-scale))`
+          }}
           initial={shouldDisableAnimations ? { opacity: 1 } : { opacity: 0, x: 60 }}
           animate={{ opacity: 1, x: 0 }}
           transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.8, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
