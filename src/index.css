@@ -19,8 +19,8 @@
   --font-scale-body: 1;
   --animation-scale: 1;
   --spacing-scale: 1;
-  --headphone-scale: 1 !important;
-  --headphone-position-offset: 500px !important;
+  --headphone-scale: 1;
+  --headphone-position-offset: 500px;
 }
 
 /* Tablet scaling (80%) */
@@ -34,8 +34,8 @@
     --font-scale-body: 0.95;
     --animation-scale: 0.8;
     --spacing-scale: 0.8;
-    --headphone-scale: 0.8 !important;
-    --headphone-position-offset: 400px !important;
+    --headphone-scale: 0.8;
+    --headphone-position-offset: 400px;
   }
 }
 
@@ -50,8 +50,8 @@
     --font-scale-body: 0.85;
     --animation-scale: 0.6;
     --spacing-scale: 0.7;
-    --headphone-scale: 0.6 !important;
-    --headphone-position-offset: 300px !important;
+    --headphone-scale: 0.6;
+    --headphone-position-offset: 300px;
   }
 }
 
@@ -509,25 +509,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 2rem;
 }
 
-/* Headphone Animation Positioning - High Specificity Override */
-.intro .hero-image-container {
-  --headphone-scale: 1 !important;
-  --headphone-position-offset: 500px !important;
-}
 
-@media (max-width: 1023px) and (min-width: 768px) {
-  .intro .hero-image-container {
-    --headphone-scale: 0.8 !important;
-    --headphone-position-offset: 400px !important;
-  }
-}
-
-@media (max-width: 767px) {
-  .intro .hero-image-container {
-    --headphone-scale: 0.6 !important;
-    --headphone-position-offset: 300px !important;
-  }
-}
 
 .hero-text-block {
   flex: 1;
