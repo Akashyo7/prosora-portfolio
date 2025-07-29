@@ -206,19 +206,15 @@
   }
   
   .timeline_progress {
-    left: calc(0.75rem / 2 + 1rem / 2); /* Center on circle: (circle width / 2) + (gap / 2) */
+    left: calc(0.75rem / 2); /* Center on the circle itself */
     transform: none;
-  }
-  
-  .timeline_circle {
-    margin-top: 0; /* Remove margin, let it align naturally with content */
-    position: relative;
-    top: 0.125rem; /* Fine-tune vertical alignment with h3 text */
   }
   
   .timeline_circle {
     width: 0.75rem;
     height: 0.75rem;
+    position: relative;
+    top: 0.25rem; /* Align with h3 text baseline */
   }
   
   .timeline_date_text {
@@ -273,7 +269,7 @@
   }
   
   .timeline_progress {
-    left: calc(0.5rem / 2 + 0.75rem / 2); /* Center on circle: (circle width / 2) + (gap / 2) */
+    left: calc(0.25rem); /* Center on the smaller circle (0.5rem / 2) */
   }
   
   .timeline_date_text {
@@ -293,9 +289,8 @@
     width: 0.5rem;
     height: 0.5rem;
     border-width: 2px;
-    margin-top: 0;
     position: relative;
-    top: 0.125rem; /* Fine-tune vertical alignment with h3 text */
+    top: 0.25rem; /* Align with h3 text baseline */
   }
 }
 
