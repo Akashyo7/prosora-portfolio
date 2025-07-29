@@ -208,10 +208,10 @@ const HeroSection = () => {
             <motion.div 
               style={{
                 position: 'absolute',
-                top: `calc(100px * var(--headphone-scale))`,
-                left: `calc(-1 * var(--headphone-position-offset))`, // Responsive screen edge position
-                width: `calc(160px * var(--headphone-scale))`,
-                height: `calc(200px * var(--headphone-scale))`,
+                top: `calc(100px * var(--headphone-scale, 1))`,
+                left: `calc(-1 * var(--headphone-position-offset, 500px))`, // Responsive screen edge position with fallback
+                width: `calc(160px * var(--headphone-scale, 1))`,
+                height: `calc(200px * var(--headphone-scale, 1))`,
                 background: 'linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.4))',
                 borderRadius: '80px 80px 100px 100px',
                 filter: 'blur(2px)',
@@ -280,10 +280,10 @@ const HeroSection = () => {
             <motion.div 
               style={{
                 position: 'absolute',
-                top: `calc(100px * var(--headphone-scale))`,
-                right: `calc(-1 * var(--headphone-position-offset) - 20px)`, // Responsive screen edge position
-                width: `calc(160px * var(--headphone-scale))`,
-                height: `calc(200px * var(--headphone-scale))`,
+                top: `calc(100px * var(--headphone-scale, 1))`,
+                right: `calc(-1 * var(--headphone-position-offset, 500px) - 20px)`, // Responsive screen edge position with fallback
+                width: `calc(160px * var(--headphone-scale, 1))`,
+                height: `calc(200px * var(--headphone-scale, 1))`,
                 background: 'linear-gradient(225deg, rgba(0,0,0,0.7), rgba(0,0,0,0.4))',
                 borderRadius: '80px 80px 100px 100px',
                 filter: 'blur(2px)',
