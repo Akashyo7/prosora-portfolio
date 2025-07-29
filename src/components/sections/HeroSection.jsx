@@ -180,6 +180,7 @@ const HeroSection = () => {
           <motion.img
             src="/assets/akash-profile.jpg"
             alt="Akash Yadav - Portfolio Picture"
+            className="image object-cover rounded-lg shadow-lg relative z-10"
             className="hero-profile-image"
             whileHover={shouldDisableAnimations ? {} : { scale: 1.02 }}
             transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
