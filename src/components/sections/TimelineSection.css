@@ -1,7 +1,7 @@
 /* Timeline Section Styles - Matching Original Website */
 
-/* CSS Custom Properties for Precise Alignment */
-:root {
+/* CSS Custom Properties for Precise Alignment - Scoped to Timeline */
+.timeline {
   --timeline-heading-font-size: 1.125rem;
   --timeline-heading-line-height: 1.4;
   --timeline-heading-offset: calc(var(--timeline-heading-font-size) * var(--timeline-heading-line-height) * 0.5);
@@ -149,7 +149,7 @@
 
 /* Responsive Design */
 @media screen and (max-width: 991px) {
-  :root {
+  .timeline {
     --timeline-heading-font-size: 1rem;
     --timeline-heading-line-height: 1.4;
     --timeline-heading-offset: calc(var(--timeline-heading-font-size) * var(--timeline-heading-line-height) * 0.5);
@@ -183,7 +183,7 @@
 }
 
 @media screen and (max-width: 767px) {
-  :root {
+  .timeline {
     --timeline-heading-font-size: 0.875rem;
     --timeline-heading-line-height: 1.4;
     --timeline-heading-offset: calc(var(--timeline-heading-font-size) * var(--timeline-heading-line-height) * 0.5);
@@ -255,7 +255,7 @@
 }
 
 @media screen and (max-width: 479px) {
-  :root {
+  .timeline {
     --timeline-heading-font-size: 0.75rem;
     --timeline-heading-line-height: 1.4;
     --timeline-heading-offset: calc(var(--timeline-heading-font-size) * var(--timeline-heading-line-height) * 0.5);
