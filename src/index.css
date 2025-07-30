@@ -20,7 +20,7 @@
   --animation-scale: 1;
   --spacing-scale: 1;
   --headphone-scale: 1;
-  --headphone-position-offset: 500px;
+  --headphone-position-offset: 600px;
 }
 
 /* Tablet scaling (80%) */
@@ -35,7 +35,7 @@
     --animation-scale: 0.8;
     --spacing-scale: 0.8;
     --headphone-scale: 0.8;
-    --headphone-position-offset: 400px;
+    --headphone-position-offset: 480px;
   }
 }
 
@@ -51,7 +51,7 @@
     --animation-scale: 0.6;
     --spacing-scale: 0.7;
     --headphone-scale: 0.6;
-    --headphone-position-offset: 300px;
+    --headphone-position-offset: 360px;
   }
 }
 

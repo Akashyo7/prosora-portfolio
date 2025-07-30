@@ -16,14 +16,14 @@ const HeroSection = () => {
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
-    
+
     const handleChange = (e) => {
       setPrefersReducedMotion(e.matches);
       if (e.matches) {
         console.log('♿ Accessibility: Reduced motion enabled');
       }
     };
-    
+
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
@@ -32,14 +32,14 @@ const HeroSection = () => {
   useEffect(() => {
     let frameCount = 0;
     let lastTime = performance.now();
-    
+
     const monitorPerformance = () => {
       const currentTime = performance.now();
       frameCount++;
-      
+
       if (currentTime - lastTime >= 1000) { // Check every second
         const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
-        
+
         if (fps < 45) {
           setPerformanceQuality('low');
           console.warn('🎯 Performance: Reducing animation quality due to low FPS:', fps);
@@ -48,22 +48,22 @@ const HeroSection = () => {
         } else {
           setPerformanceQuality('high');
         }
-        
+
         frameCount = 0;
         lastTime = currentTime;
       }
-      
+
       requestAnimationFrame(monitorPerformance);
     };
-    
+
     const performanceTimer = requestAnimationFrame(monitorPerformance);
-    
+
     return () => cancelAnimationFrame(performanceTimer);
   }, []);
 
   // Determine if animations should be disabled
   const shouldDisableAnimations = prefersReducedMotion || performanceQuality === 'low';
-  
+
   // Testing and validation
   useEffect(() => {
     // Log system status for testing
@@ -77,37 +77,37 @@ const HeroSection = () => {
       musicStatus: isPlaying && !isMuted ? 'PLAYING' : 'STOPPED/MUTED',
       timestamp: new Date().toISOString()
     });
-    
+
     // Validate that content remains accessible
     const heroSection = document.querySelector('[role="banner"]');
     if (heroSection) {
-      const isAccessible = heroSection.getAttribute('aria-label') && 
-                          heroSection.getAttribute('aria-live');
+      const isAccessible = heroSection.getAttribute('aria-label') &&
+        heroSection.getAttribute('aria-live');
       console.log('♿ Accessibility validation:', isAccessible ? 'PASS' : 'FAIL');
     }
-    
+
     // Test musical note button functionality
     const musicButton = document.querySelector('[aria-label*="music"]');
     if (musicButton) {
       console.log('🎵 Music button validation:', musicButton ? 'PASS' : 'FAIL');
     }
-    
+
     // Validate content remains primary focus
     const contentBlocks = document.querySelectorAll('.intro_left, .intro_right');
     const animationElements = document.querySelectorAll('[aria-hidden="true"]');
-    
+
     console.log('📊 Content vs Animation Balance:', {
       contentBlocks: contentBlocks.length,
       animationElements: animationElements.length,
       ratio: contentBlocks.length / Math.max(animationElements.length, 1),
       status: contentBlocks.length >= 2 ? 'PASS' : 'FAIL'
     });
-    
+
     // Cross-device compatibility check
     const isMobile = window.innerWidth < 768;
     const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
     const isDesktop = window.innerWidth >= 1024;
-    
+
     console.log('📱 Device Compatibility:', {
       isMobile,
       isTablet,
@@ -116,12 +116,12 @@ const HeroSection = () => {
       animationsOptimized: shouldDisableAnimations || performanceQuality !== 'low'
     });
   }, [prefersReducedMotion, performanceQuality, shouldDisableAnimations, showMusicControls]);
-  
+
   // Trigger music after headphone animation completes
   useEffect(() => {
     // Start music integration after headphone animation
     startAfterAnimation();
-    
+
     // Show music controls immediately for testing
     const timer = setTimeout(() => {
       console.log('🎵 Showing music controls');
@@ -132,7 +132,7 @@ const HeroSection = () => {
   }, [startAfterAnimation]);
 
   return (
-    <section 
+    <section
       className="intro min-h-screen flex items-center relative"
       aria-label="Hero section introducing Akash Yadav with elegant headphone animation"
       role="banner"
@@ -141,20 +141,20 @@ const HeroSection = () => {
     >
       {/* Responsive Layout - Three-column on all devices */}
       <div className="hero-container">
-        
-      
-        
+
+
+
         {/* Left Section - Strategy & Analytics */}
-        <motion.div 
+        <motion.div
           className="intro_left hero-text-block"
           initial={shouldDisableAnimations ? { opacity: 1 } : { opacity: 0, x: -60 }}
           animate={{ opacity: 1, x: 0 }}
           transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-          whileHover={shouldDisableAnimations ? {} : { 
+          whileHover={shouldDisableAnimations ? {} : {
             scale: 1.02,
             boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
           }}
-          whileFocus={shouldDisableAnimations ? {} : { 
+          whileFocus={shouldDisableAnimations ? {} : {
             scale: 1.02,
             boxShadow: "0 0 0 2px rgba(59, 130, 246, 0.5)"
           }}
@@ -168,12 +168,12 @@ const HeroSection = () => {
         </motion.div>
 
         {/* Center - Single Portfolio Image with Headphone Animation */}
-        <motion.div 
+        <motion.div
           className="center-image hero-image-container"
           initial={shouldDisableAnimations ? { opacity: 1 } : { opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.8, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-          whileHover={shouldDisableAnimations ? {} : { 
+          whileHover={shouldDisableAnimations ? {} : {
             scale: 1.01
           }}
         >
@@ -189,13 +189,13 @@ const HeroSection = () => {
               console.log('Desktop image failed to load:', e.target.src);
             }}
           />
-          
+
           {/* Enhanced Headphone Animation - Perfect Framing Version */}
-          <div 
-            style={{ 
-              position: 'absolute', 
-              inset: 0, 
-              zIndex: 25, 
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              zIndex: 25,
               overflow: 'visible',
               willChange: 'transform, opacity', // Performance optimization for animations
               transform: 'translate3d(0, 0, 0)' // Force GPU acceleration
@@ -203,13 +203,13 @@ const HeroSection = () => {
             aria-hidden="true"
             role="presentation"
           >
-            
+
             {/* Left Headphone Cup - Perfect Screen Edge Position */}
-            <motion.div 
+            <motion.div
               style={{
                 position: 'absolute',
                 top: `calc(100px * var(--headphone-scale, 1))`,
-                left: `calc(-1 * var(--headphone-position-offset, 500px))`, // Responsive screen edge position with fallback
+                left: `calc(-1 * var(--headphone-position-offset, 600px))`, // Responsive screen edge position with fallback
                 width: `calc(160px * var(--headphone-scale, 1))`,
                 height: `calc(200px * var(--headphone-scale, 1))`,
                 background: 'linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.4))',
@@ -223,7 +223,7 @@ const HeroSection = () => {
               animate={{ x: 0, opacity: 0.45, scale: 1 }}
               transition={shouldDisableAnimations ? { duration: 0 } : { delay: 1.5, duration: 2.5, ease: [0.25, 0.46, 0.45, 0.94] }}
             />
-            
+
             {/* Left Cup - Ultra-Minimal Presence */}
             {showMusicControls && (
               <>
@@ -240,17 +240,17 @@ const HeroSection = () => {
                     zIndex: 21,
                     transform: 'rotate(-15deg)'
                   }}
-                  animate={shouldDisableAnimations ? { opacity: 0.03 } : { 
+                  animate={shouldDisableAnimations ? { opacity: 0.03 } : {
                     opacity: [0.03, 0.06, 0.03]
                   }}
-                  transition={shouldDisableAnimations ? { duration: 0 } : { 
+                  transition={shouldDisableAnimations ? { duration: 0 } : {
                     duration: performanceQuality === 'low' ? 35 : 28, // Slower on low performance
                     repeat: performanceQuality === 'low' ? false : Infinity, // Disable on low performance
                     ease: [0.4, 0.0, 0.6, 1.0], // Organic breathing curve
                     repeatDelay: performanceQuality === 'high' ? Math.random() * 2 : 0 // Randomization only on high performance
                   }}
                 />
-                
+
                 {/* Single pixel focus - ultimate minimalism */}
                 <motion.div
                   style={{
@@ -263,10 +263,10 @@ const HeroSection = () => {
                     borderRadius: '50%',
                     zIndex: 22
                   }}
-                  animate={{ 
+                  animate={{
                     opacity: [0, 0.1, 0]
                   }}
-                  transition={{ 
+                  transition={{
                     duration: 4,
                     repeat: Infinity,
                     ease: [0.25, 0.1, 0.25, 1.0], // Whisper-like timing curve
@@ -275,13 +275,13 @@ const HeroSection = () => {
                 />
               </>
             )}
-            
+
             {/* Right Headphone Cup - Perfect Screen Edge Position */}
-            <motion.div 
+            <motion.div
               style={{
                 position: 'absolute',
                 top: `calc(100px * var(--headphone-scale, 1))`,
-                right: `calc(-1 * var(--headphone-position-offset, 500px) - 20px)`, // Responsive screen edge position with fallback
+                right: `calc(-1 * var(--headphone-position-offset, 600px) - 20px)`, // Responsive screen edge position with fallback
                 width: `calc(160px * var(--headphone-scale, 1))`,
                 height: `calc(200px * var(--headphone-scale, 1))`,
                 background: 'linear-gradient(225deg, rgba(0,0,0,0.7), rgba(0,0,0,0.4))',
@@ -295,13 +295,13 @@ const HeroSection = () => {
               animate={{ x: 0, opacity: 0.45, scale: 1 }}
               transition={shouldDisableAnimations ? { duration: 0 } : { delay: 1.5, duration: 2.5, ease: [0.25, 0.46, 0.45, 0.94] }}
             />
-            
+
             {/* Left Vertical Line - From left cup to navbar with Audio Visualizer */}
-            <motion.div 
+            <motion.div
               style={{
                 position: 'absolute',
                 top: '-160px', // Extends much higher to actually reach navbar
-                left: '-420px', // Aligned with perfect left cup center position
+                left: '-520px', // Aligned with perfect left cup center position
                 width: '4px',
                 height: '500px', // Much taller to merge with navbar
                 background: 'linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7), rgba(0,0,0,0.4))',
@@ -316,19 +316,19 @@ const HeroSection = () => {
               animate={{ scaleY: 1, opacity: 0.8 }}
               transition={shouldDisableAnimations ? { duration: 0 } : { delay: 3.8, duration: 2.2, ease: "easeOut" }}
             />
-            
+
             {/* Left Audio Visualizer - Ultimate Elegance with Music Coordination */}
             {showMusicControls && (
               <>
                 {/* Ultra-subtle breathing line - coordinated with music status */}
-                <motion.div 
+                <motion.div
                   style={{
                     position: 'absolute',
                     top: '-160px',
-                    left: '-421px',
+                    left: '-521px',
                     width: '4px',
                     height: '500px',
-                    background: isPlaying && !isMuted 
+                    background: isPlaying && !isMuted
                       ? 'linear-gradient(180deg, rgba(34, 197, 94, 0.06), rgba(34, 197, 94, 0.03), rgba(0,0,0,0.02))' // Subtle green tint when playing
                       : 'linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.05), rgba(0,0,0,0.02))',
                     borderRadius: '2px',
@@ -337,10 +337,10 @@ const HeroSection = () => {
                     transform: 'translate3d(0, 0, 0)', // GPU acceleration
                     willChange: 'opacity, background' // Performance optimization
                   }}
-                  animate={shouldDisableAnimations ? { opacity: 0.05 } : { 
+                  animate={shouldDisableAnimations ? { opacity: 0.05 } : {
                     opacity: isPlaying && !isMuted ? [0.06, 0.12, 0.06] : [0.05, 0.1, 0.05]
                   }}
-                  transition={shouldDisableAnimations ? { duration: 0 } : { 
+                  transition={shouldDisableAnimations ? { duration: 0 } : {
                     duration: isPlaying && !isMuted ? 18 : (performanceQuality === 'low' ? 30 : 22), // Faster pulse when playing
                     repeat: performanceQuality === 'low' ? false : Infinity,
                     ease: [0.4, 0.0, 0.6, 1.0], // Organic breathing curve
@@ -350,13 +350,13 @@ const HeroSection = () => {
                 />
               </>
             )}
-            
+
             {/* Right Vertical Line - From right cup to navbar with Audio Visualizer */}
-            <motion.div 
+            <motion.div
               style={{
                 position: 'absolute',
                 top: '-160px', // Extends much higher to actually reach navbar
-                right: '-440px', // Aligned with perfect right cup center position
+                right: '-540px', // Aligned with perfect right cup center position
                 width: '4px',
                 height: '500px', // Much taller to merge with navbar
                 background: 'linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7), rgba(0,0,0,0.4))',
@@ -371,19 +371,19 @@ const HeroSection = () => {
               animate={{ scaleY: 1, opacity: 0.8 }}
               transition={shouldDisableAnimations ? { duration: 0 } : { delay: 3.8, duration: 2.2, ease: "easeOut" }}
             />
-            
+
             {/* Right Audio Visualizer - Ultimate Elegance with Music Coordination */}
             {showMusicControls && (
               <>
                 {/* Ultra-subtle breathing line with offset timing - coordinated with music status */}
-                <motion.div 
+                <motion.div
                   style={{
                     position: 'absolute',
                     top: '-160px',
-                    right: '-441px',
+                    right: '-541px',
                     width: '4px',
                     height: '500px',
-                    background: isPlaying && !isMuted 
+                    background: isPlaying && !isMuted
                       ? 'linear-gradient(180deg, rgba(34, 197, 94, 0.06), rgba(34, 197, 94, 0.03), rgba(0,0,0,0.02))' // Subtle green tint when playing
                       : 'linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.05), rgba(0,0,0,0.02))',
                     borderRadius: '2px',
@@ -392,10 +392,10 @@ const HeroSection = () => {
                     transform: 'translate3d(0, 0, 0)', // GPU acceleration
                     willChange: 'opacity, background' // Performance optimization
                   }}
-                  animate={shouldDisableAnimations ? { opacity: 0.05 } : { 
+                  animate={shouldDisableAnimations ? { opacity: 0.05 } : {
                     opacity: isPlaying && !isMuted ? [0.06, 0.12, 0.06] : [0.05, 0.1, 0.05]
                   }}
-                  transition={shouldDisableAnimations ? { duration: 0 } : { 
+                  transition={shouldDisableAnimations ? { duration: 0 } : {
                     duration: isPlaying && !isMuted ? 20 : (performanceQuality === 'low' ? 32 : 25), // Faster pulse when playing
                     repeat: performanceQuality === 'low' ? false : Infinity,
                     ease: [0.4, 0.0, 0.6, 1.0], // Organic breathing curve
@@ -406,15 +406,15 @@ const HeroSection = () => {
                 />
               </>
             )}
-            
+
             {/* Elegant Music Status Indicator Dots - Like Headphone "On" Lights */}
-            
+
             {/* Left Music Status Dot */}
-            <motion.div 
+            <motion.div
               style={{
                 position: 'absolute',
                 top: '280px',
-                left: '-420px', // Aligned with perfect left cup center
+                left: '-520px', // Aligned with perfect left cup center
                 width: '8px',
                 height: '8px',
                 borderRadius: '50%',
@@ -424,37 +424,37 @@ const HeroSection = () => {
                 transform: 'translate3d(0, 0, 0)' // GPU acceleration
               }}
               initial={shouldDisableAnimations ? { opacity: 0.8 } : { opacity: 0, scale: 0 }}
-              animate={{ 
-                opacity: 0.8, 
+              animate={{
+                opacity: 0.8,
                 scale: 1,
-                backgroundColor: isPlaying && !isMuted 
+                backgroundColor: isPlaying && !isMuted
                   ? 'rgba(34, 197, 94, 0.8)' // Elegant green when playing
                   : 'rgba(239, 68, 68, 0.6)', // Subtle red when stopped/muted
                 boxShadow: isPlaying && !isMuted
                   ? '0 0 8px rgba(34, 197, 94, 0.4), 0 0 16px rgba(34, 197, 94, 0.2)' // Green glow
                   : '0 0 4px rgba(239, 68, 68, 0.3)' // Subtle red glow
               }}
-              transition={shouldDisableAnimations ? { duration: 0 } : { 
-                delay: 4.2, 
-                duration: 0.5, 
+              transition={shouldDisableAnimations ? { duration: 0 } : {
+                delay: 4.2,
+                duration: 0.5,
                 ease: [0.25, 0.46, 0.45, 0.94],
                 backgroundColor: { duration: 0.8, ease: "easeInOut" },
                 boxShadow: { duration: 0.8, ease: "easeInOut" }
               }}
-              whileHover={shouldDisableAnimations ? {} : { 
+              whileHover={shouldDisableAnimations ? {} : {
                 scale: 1.2,
                 boxShadow: isPlaying && !isMuted
                   ? '0 0 12px rgba(34, 197, 94, 0.6), 0 0 24px rgba(34, 197, 94, 0.3)'
                   : '0 0 8px rgba(239, 68, 68, 0.5)'
               }}
             />
-            
+
             {/* Right Music Status Dot */}
-            <motion.div 
+            <motion.div
               style={{
                 position: 'absolute',
                 top: '280px',
-                right: '-440px', // Aligned with perfect right cup center
+                right: '-540px', // Aligned with perfect right cup center
                 width: '8px',
                 height: '8px',
                 borderRadius: '50%',
@@ -464,31 +464,31 @@ const HeroSection = () => {
                 transform: 'translate3d(0, 0, 0)' // GPU acceleration
               }}
               initial={shouldDisableAnimations ? { opacity: 0.8 } : { opacity: 0, scale: 0 }}
-              animate={{ 
-                opacity: 0.8, 
+              animate={{
+                opacity: 0.8,
                 scale: 1,
-                backgroundColor: isPlaying && !isMuted 
+                backgroundColor: isPlaying && !isMuted
                   ? 'rgba(34, 197, 94, 0.8)' // Elegant green when playing
                   : 'rgba(239, 68, 68, 0.6)', // Subtle red when stopped/muted
                 boxShadow: isPlaying && !isMuted
                   ? '0 0 8px rgba(34, 197, 94, 0.4), 0 0 16px rgba(34, 197, 94, 0.2)' // Green glow
                   : '0 0 4px rgba(239, 68, 68, 0.3)' // Subtle red glow
               }}
-              transition={shouldDisableAnimations ? { duration: 0 } : { 
+              transition={shouldDisableAnimations ? { duration: 0 } : {
                 delay: 4.4, // Slightly staggered from left dot
-                duration: 0.5, 
+                duration: 0.5,
                 ease: [0.25, 0.46, 0.45, 0.94],
                 backgroundColor: { duration: 0.8, ease: "easeInOut" },
                 boxShadow: { duration: 0.8, ease: "easeInOut" }
               }}
-              whileHover={shouldDisableAnimations ? {} : { 
+              whileHover={shouldDisableAnimations ? {} : {
                 scale: 1.2,
                 boxShadow: isPlaying && !isMuted
                   ? '0 0 12px rgba(34, 197, 94, 0.6), 0 0 24px rgba(34, 197, 94, 0.3)'
                   : '0 0 8px rgba(239, 68, 68, 0.5)'
               }}
             />
-            
+
             {/* Subtle Breathing Effect for Active Music Status */}
             {isPlaying && !isMuted && showMusicControls && !shouldDisableAnimations && (
               <>
@@ -497,7 +497,7 @@ const HeroSection = () => {
                   style={{
                     position: 'absolute',
                     top: '276px', // Slightly larger to create glow effect
-                    left: '-424px',
+                    left: '-524px',
                     width: '16px',
                     height: '16px',
                     borderRadius: '50%',
@@ -515,13 +515,13 @@ const HeroSection = () => {
                     ease: "easeInOut"
                   }}
                 />
-                
+
                 {/* Right dot breathing glow */}
                 <motion.div
                   style={{
                     position: 'absolute',
                     top: '276px',
-                    right: '-444px',
+                    right: '-544px',
                     width: '16px',
                     height: '16px',
                     borderRadius: '50%',
@@ -542,23 +542,23 @@ const HeroSection = () => {
                 />
               </>
             )}
-            
+
           </div>
-          
+
 
         </motion.div>
 
         {/* Right Section - Product & Marketing */}
-        <motion.div 
+        <motion.div
           className="intro_right hero-text-block"
           initial={shouldDisableAnimations ? { opacity: 1 } : { opacity: 0, x: 60 }}
           animate={{ opacity: 1, x: 0 }}
           transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.8, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          whileHover={shouldDisableAnimations ? {} : { 
+          whileHover={shouldDisableAnimations ? {} : {
             scale: 1.02,
             boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
           }}
-          whileFocus={shouldDisableAnimations ? {} : { 
+          whileFocus={shouldDisableAnimations ? {} : {
             scale: 1.02,
             boxShadow: "0 0 0 2px rgba(168, 85, 247, 0.5)"
           }}
@@ -573,7 +573,7 @@ const HeroSection = () => {
       </div>
 
 
-      
+
 
 
     </section>
