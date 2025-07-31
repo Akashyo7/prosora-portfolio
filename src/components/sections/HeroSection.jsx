@@ -208,7 +208,7 @@ const HeroSection = () => {
             <motion.div
               style={{
                 position: 'absolute',
-                top: `calc(100px * var(--headphone-scale, 1))`,
+                top: `calc(50px * var(--headphone-scale, 1))`, // Moved up to meet navbar elegantly
                 left: `calc(-1 * var(--headphone-position-offset, 600px))`, // Responsive screen edge position with fallback
                 width: `calc(160px * var(--headphone-scale, 1))`,
                 height: `calc(200px * var(--headphone-scale, 1))`,
@@ -280,8 +280,8 @@ const HeroSection = () => {
             <motion.div
               style={{
                 position: 'absolute',
-                top: `calc(100px * var(--headphone-scale, 1))`,
-                right: `calc(-1 * var(--headphone-position-offset, 600px) - 20px)`, // Responsive screen edge position with fallback
+                top: `calc(50px * var(--headphone-scale, 1))`, // Moved up to meet navbar elegantly
+                right: `calc(-1 * var(--headphone-position-offset, 600px))`, // Responsive screen edge position with fallback - aligned with left
                 width: `calc(160px * var(--headphone-scale, 1))`,
                 height: `calc(200px * var(--headphone-scale, 1))`,
                 background: 'linear-gradient(225deg, rgba(0,0,0,0.7), rgba(0,0,0,0.4))',
