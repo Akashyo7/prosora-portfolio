@@ -25,6 +25,9 @@ Add these secrets:
 - `NOTION_TOKEN`: `ntn_556182459079nbVODH1A9uubv1oESeTBEiHRWz78wDS1bCL`
 - `NOTION_DATABASE_ID`: `23bcf31b151380cab3f0ff3635d58a65`
 
+### 2. Test Manual Run
+Go to Actions tab → "Update Blog Posts" → "Run workflow" → Run workflow
+
 ### 2. Enable GitHub Actions
 The workflow file is already created at `.github/workflows/update-blog.yml`
 
@@ -34,7 +37,7 @@ Go to Actions tab → "Update Blog Posts" → "Run workflow"
 ## 📊 How Updates Work
 
 **Automatic:**
-- Runs every hour: `0 * * * *`
+- Runs daily at 9 AM UTC: `0 9 * * *`
 - Checks Notion for new posts
 - Updates `src/data/blog-posts.json`
 - Auto-commits changes

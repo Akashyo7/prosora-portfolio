@@ -5,9 +5,14 @@ name: Update Blog Posts
 
 on:
   schedule:
-    # Run every hour
-    - cron: '0 * * * *'
+    # Run daily at 9 AM UTC (perfect for blog updates)
+    - cron: '0 9 * * *'
   workflow_dispatch: # Allow manual trigger
+    inputs:
+      force_update:
+        description: 'Force update even if no changes'
+        required: false
+        default: 'false'
   push:
     branches: [ main ]
     paths: [ '.github/workflows/update-blog.yml' ]
