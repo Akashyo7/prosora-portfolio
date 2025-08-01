@@ -1,0 +1,28 @@
+[
+  {
+    "id": "fallback-1",
+    "title": "Product Management Lessons from OYO",
+    "slug": "product-management-lessons-from-oyo",
+    "excerpt": "Key insights from managing product operations at OYO and working with chatbot \"Yo\".",
+    "date": "2025-01-20",
+    "tags": [
+      "Product Management",
+      "OYO"
+    ],
+    "featuredImage": null,
+    "url": "https://www.notion.so/23bcf31b151380cab3f0ff3635d58a65"
+  },
+  {
+    "id": "fallback-2",
+    "title": "From IIT Bombay to Product Strategy",
+    "slug": "from-iit-bombay-to-product-strategy",
+    "excerpt": "My journey from engineering to product management and strategic thinking.",
+    "date": "2025-01-15",
+    "tags": [
+      "Career",
+      "Strategy"
+    ],
+    "featuredImage": null,
+    "url": "https://www.notion.so/23bcf31b151380cab3f0ff3635d58a65"
+  }
+]

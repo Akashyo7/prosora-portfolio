@@ -26,14 +26,28 @@ export default async function handler(request) {
   }
 
   try {
-    // Get environment variables
-    const NOTION_TOKEN = process.env.VITE_NOTION_TOKEN
-    const DATABASE_ID = process.env.VITE_NOTION_DATABASE_ID
+    console.log('🚀 Edge Function called')
+    
+    // Get environment variables (Vercel functions use different env var names)
+    const NOTION_TOKEN = process.env.VITE_NOTION_TOKEN || process.env.NOTION_TOKEN
+    const DATABASE_ID = process.env.VITE_NOTION_DATABASE_ID || process.env.NOTION_DATABASE_ID
+
+    console.log('🔍 Environment check:', {
+      hasToken: !!NOTION_TOKEN,
+      tokenPrefix: NOTION_TOKEN?.substring(0, 10),
+      databaseId: DATABASE_ID
+    })
 
     if (!NOTION_TOKEN || !DATABASE_ID) {
+      console.error('❌ Missing environment variables')
       return new Response(JSON.stringify({ 
         error: 'Missing configuration',
-        success: false 
+        success: false,
+        debug: {
+          hasToken: !!NOTION_TOKEN,
+          hasDatabase: !!DATABASE_ID,
+          availableEnvVars: Object.keys(process.env).filter(key => key.includes('NOTION'))
+        }
       }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },

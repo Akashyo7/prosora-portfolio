@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run fetch-blog && vite build",
+    "build:quick": "vite build",
+    "fetch-blog": "node scripts/fetch-blog-posts.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "pre-launch": "node scripts/pre-launch-check.js",

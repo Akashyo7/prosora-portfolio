@@ -70,56 +70,86 @@ class NotionClient {
    * @returns {Promise<Array>} Array of blog posts
    */
   async getBlogPosts() {
-    console.log('🔍 getBlogPosts() called - testing API proxy');
+    console.log('🔍 getBlogPosts() called');
     console.log('🌍 Current URL:', window.location.href);
     console.log('🔧 Environment:', import.meta.env.MODE);
     
-    try {
-      console.log('🚀 Making request to API proxy...');
-      const apiUrl = '/api/blog';
-      console.log('📍 API URL:', apiUrl);
-      
-      const response = await fetch(apiUrl);
-      console.log('📡 API proxy response status:', response.status);
-      console.log('📡 API proxy response headers:', Object.fromEntries(response.headers.entries()));
-      
-      if (!response.ok) {
-        console.error('❌ API proxy failed with status:', response.status);
-        const responseText = await response.text();
-        console.error('❌ API proxy error response:', responseText);
-        
-        // If it's a 404, the API endpoint doesn't exist (local dev issue)
-        if (response.status === 404) {
-          console.warn('⚠️ API endpoint not found - likely running in local dev mode');
-          console.log('💡 Trying direct Notion API for local development...');
-          return this.getBlogPostsDirect();
+    // Try multiple approaches in order
+    const approaches = [
+      { name: 'API Proxy', method: () => this.tryAPIProxy() },
+      { name: 'CORS Proxy', method: () => this.tryCORSProxy() },
+      { name: 'Mock Data', method: () => this.getMockPosts() }
+    ];
+    
+    for (const approach of approaches) {
+      try {
+        console.log(`🚀 Trying ${approach.name}...`);
+        const result = await approach.method();
+        if (result && result.length > 0) {
+          console.log(`✅ ${approach.name} succeeded with ${result.length} posts`);
+          return result;
         }
-        
-        console.log('🔄 Falling back to mock data...');
-        return this.getMockPosts();
+      } catch (error) {
+        console.error(`❌ ${approach.name} failed:`, error.message);
       }
-
-      const data = await response.json();
-      console.log('✅ API proxy response received:', data);
-      
-      if (data.success && data.posts && data.posts.length > 0) {
-        console.log('📊 Posts loaded from Notion:', data.posts.length);
-        return data.posts;
-      } else {
-        console.log('📝 No posts found in API response, using mock data');
-        return this.getMockPosts();
-      }
-      
-    } catch (error) {
-      console.error('❌ Failed to fetch blog posts via API proxy:', error);
-      console.error('❌ Error details:', {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      });
-      console.log('🔄 Falling back to mock data...');
-      return this.getMockPosts();
     }
+    
+    console.log('🔄 All approaches failed, using mock data');
+    return this.getMockPosts();
+  }
+
+  async tryAPIProxy() {
+    const response = await fetch('/api/blog');
+    
+    if (!response.ok) {
+      throw new Error(`API proxy failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (data.success && data.posts && data.posts.length > 0) {
+      return data.posts;
+    }
+    
+    throw new Error('No posts in API response');
+  }
+
+  async tryCORSProxy() {
+    console.log('🌐 Trying CORS proxy approach...');
+    
+    if (!NOTION_CONFIG.token || !NOTION_CONFIG.databaseId) {
+      throw new Error('Missing Notion configuration');
+    }
+
+    // Use a simple, reliable CORS proxy
+    const proxyUrl = 'https://corsproxy.io/?';
+    const notionUrl = `https://api.notion.com/v1/databases/${NOTION_CONFIG.databaseId}/query`;
+    
+    const response = await fetch(proxyUrl + encodeURIComponent(notionUrl), {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${NOTION_CONFIG.token}`,
+        'Notion-Version': NOTION_CONFIG.version,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        page_size: 100
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`CORS proxy failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('📊 CORS proxy response:', data);
+    
+    if (!data.results || data.results.length === 0) {
+      throw new Error('No posts found in Notion');
+    }
+    
+    const transformedPosts = data.results.map(page => this.transformNotionPage(page));
+    console.log('🔄 Transformed posts via CORS proxy:', transformedPosts.length);
+    return transformedPosts;
   }
 
   /**
