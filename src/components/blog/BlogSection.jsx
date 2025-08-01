@@ -22,6 +22,17 @@ const BlogSection = () => {
         console.log('✅ Blog posts loaded:', blogPosts.length, 'posts');
         console.log('📝 Posts data:', blogPosts);
         
+        // Debug each post's image and content
+        blogPosts.forEach((post, index) => {
+          console.log(`📄 Post ${index + 1}:`, {
+            title: post.title,
+            excerpt: post.excerpt?.substring(0, 50) + '...',
+            featuredImage: post.featuredImage,
+            date: post.date,
+            tags: post.tags
+          });
+        });
+        
         setPosts(blogPosts);
         setFilteredPosts(blogPosts);
       } catch (error) {
@@ -173,7 +184,11 @@ const BlogSection = () => {
                                         alt={post.title}
                                         className="blog-image"
                                         loading="lazy"
+                                        onLoad={() => {
+                                          console.log('✅ Image loaded successfully:', post.featuredImage);
+                                        }}
                                         onError={(e) => {
+                                          console.error('❌ Image failed to load:', post.featuredImage);
                                           e.target.style.display = 'none';
                                           e.target.parentElement.innerHTML = `
                                             <div class="blog-image-placeholder">

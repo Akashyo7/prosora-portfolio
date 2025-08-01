@@ -11,6 +11,12 @@ const NOTION_CONFIG = {
   databaseId: import.meta.env.VITE_NOTION_DATABASE_ID,
 };
 
+// Debug environment variables loading
+console.log('🔧 Environment variables check:');
+console.log('VITE_NOTION_TOKEN exists:', !!import.meta.env.VITE_NOTION_TOKEN);
+console.log('VITE_NOTION_DATABASE_ID exists:', !!import.meta.env.VITE_NOTION_DATABASE_ID);
+console.log('All env vars:', Object.keys(import.meta.env).filter(key => key.startsWith('VITE_')));
+
 /**
  * Notion API client
  */
@@ -64,47 +70,34 @@ class NotionClient {
    * @returns {Promise<Array>} Array of blog posts
    */
   async getBlogPosts() {
-    console.log('🔍 Checking Notion configuration...');
-    console.log('Token exists:', !!NOTION_CONFIG.token);
-    console.log('Database ID:', NOTION_CONFIG.databaseId);
+    console.log('🔍 getBlogPosts() called - using API proxy');
     
-    if (!NOTION_CONFIG.token || !NOTION_CONFIG.databaseId) {
-      console.warn('⚠️ Notion configuration missing. Using mock data.');
-      console.log('Token:', NOTION_CONFIG.token ? 'Present' : 'Missing');
-      console.log('Database ID:', NOTION_CONFIG.databaseId ? 'Present' : 'Missing');
-      return this.getMockPosts();
-    }
-
     try {
-      console.log('🚀 Making Notion API request...');
-      // Get all pages from the database (no filter to see what's available)
-      const response = await this.request(`/databases/${NOTION_CONFIG.databaseId}/query`, {
-        method: 'POST',
-        body: JSON.stringify({
-          // Remove sorts for now to avoid property name issues
-          page_size: 100
-        })
-      });
-
-      console.log('✅ Notion API response received:', response);
-      console.log('📊 Results count:', response.results?.length || 0);
+      console.log('🚀 Making request to API proxy...');
+      const response = await fetch('/api/notion-blog');
       
-      if (!response.results || response.results.length === 0) {
-        console.log('📝 No published posts found in Notion, using mock data');
+      console.log('📡 API proxy response status:', response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('❌ API proxy error:', errorData);
+        console.log('🔄 Falling back to mock data...');
+        return this.getMockPosts();
+      }
+
+      const data = await response.json();
+      console.log('✅ API proxy response received:', data);
+      
+      if (data.success && data.posts && data.posts.length > 0) {
+        console.log('📊 Posts loaded from Notion:', data.posts.length);
+        return data.posts;
+      } else {
+        console.log('📝 No posts found in API response, using mock data');
         return this.getMockPosts();
       }
       
-      const transformedPosts = response.results.map(page => this.transformNotionPage(page));
-      console.log('🔄 Transformed posts:', transformedPosts);
-      
-      return transformedPosts;
     } catch (error) {
-      console.error('❌ Failed to fetch blog posts from Notion:', error);
-      console.error('Error details:', {
-        message: error.message,
-        status: error.status,
-        stack: error.stack
-      });
+      console.error('❌ Failed to fetch blog posts via API proxy:', error);
       console.log('🔄 Falling back to mock data...');
       return this.getMockPosts();
     }
@@ -150,18 +143,25 @@ class NotionClient {
     // Try different possible property names
     const titleProperty = properties.Title || properties.Name || properties.title || properties.name;
     const statusProperty = properties.Status || properties.status;
-    const dateProperty = properties.Date || properties.date || properties.Created;
-    const tagsProperty = properties.Tags || properties.tags || properties.Category;
-    const excerptProperty = properties.Excerpt || properties.excerpt || properties.Description;
+    const dateProperty = properties.Date || properties.date || properties.Created || properties.created;
+    const tagsProperty = properties.Tags || properties.tags || properties.Category || properties.category;
+    const excerptProperty = properties.Excerpt || properties.excerpt || properties.Description || properties.description || properties.Summary || properties.summary;
     
     const title = this.extractText(titleProperty) || 'Untitled Post';
+    const featuredImage = this.extractCoverImage(page);
     
     console.log('📝 Extracted data:', {
       title,
       status: statusProperty?.select?.name,
       date: dateProperty?.date?.start,
-      tags: tagsProperty?.multi_select?.length || 0
+      tags: tagsProperty?.multi_select?.length || 0,
+      featuredImage: featuredImage,
+      hasPageCover: !!page.cover,
+      coverType: page.cover?.type
     });
+    
+    const extractedImage = this.extractCoverImage(page);
+    const tags = tagsProperty?.multi_select?.map(tag => tag.name) || [];
     
     return {
       id: page.id,
@@ -169,10 +169,10 @@ class NotionClient {
       slug: this.generateSlug(title),
       excerpt: this.extractText(excerptProperty) || '',
       date: dateProperty?.date?.start || new Date().toISOString().split('T')[0],
-      tags: tagsProperty?.multi_select?.map(tag => tag.name) || [],
+      tags,
       status: statusProperty?.select?.name || 'Published', // Default to Published if no status
       featured: properties.Featured?.checkbox || false,
-      featuredImage: this.extractCoverImage(page),
+      featuredImage: extractedImage || this.generatePlaceholderImage(title, tags),
       readingTime: this.calculateReadingTime(this.extractText(excerptProperty) || ''),
       lastModified: page.last_edited_time,
       // Use the actual Notion page URL for direct access
@@ -218,8 +218,29 @@ class NotionClient {
    * @returns {string} Plain text
    */
   extractText(richText) {
-    if (!richText || !richText.rich_text) return '';
-    return richText.rich_text.map(text => text.plain_text).join('');
+    if (!richText) return '';
+    
+    // Handle different property types
+    if (richText.rich_text && Array.isArray(richText.rich_text)) {
+      return richText.rich_text.map(text => text.plain_text || '').join('');
+    }
+    
+    // Handle title property
+    if (richText.title && Array.isArray(richText.title)) {
+      return richText.title.map(text => text.plain_text || '').join('');
+    }
+    
+    // Handle plain text
+    if (typeof richText === 'string') {
+      return richText;
+    }
+    
+    // Handle direct text content
+    if (richText.plain_text) {
+      return richText.plain_text;
+    }
+    
+    return '';
   }
 
   /**
@@ -228,13 +249,51 @@ class NotionClient {
    * @returns {string|null} Cover image URL
    */
   extractCoverImage(page) {
+    console.log('🖼️ Extracting cover image from page:', page.id);
+    console.log('📋 Page structure:', {
+      hasCover: !!page.cover,
+      coverType: page.cover?.type,
+      properties: Object.keys(page.properties)
+    });
+    
+    // Check page cover first (this is the main cover image)
     if (page.cover) {
+      console.log('📸 Found page cover:', page.cover);
       if (page.cover.type === 'external') {
+        console.log('✅ Using external cover image:', page.cover.external.url);
         return page.cover.external.url;
       } else if (page.cover.type === 'file') {
+        console.log('✅ Using file cover image:', page.cover.file.url);
         return page.cover.file.url;
       }
     }
+    
+    // Check if there's a Cover property in the database
+    const properties = page.properties;
+    const possibleCoverProps = ['Cover', 'cover', 'Image', 'image', 'Featured Image', 'Thumbnail'];
+    
+    for (const propName of possibleCoverProps) {
+      const coverProperty = properties[propName];
+      if (coverProperty) {
+        console.log(`🖼️ Found ${propName} property:`, coverProperty);
+        
+        if (coverProperty.type === 'files' && coverProperty.files && coverProperty.files.length > 0) {
+          const file = coverProperty.files[0];
+          if (file.type === 'external') {
+            console.log('✅ Using external file from property:', file.external.url);
+            return file.external.url;
+          } else if (file.type === 'file') {
+            console.log('✅ Using file from property:', file.file.url);
+            return file.file.url;
+          }
+        } else if (coverProperty.type === 'url' && coverProperty.url) {
+          console.log('✅ Using URL from property:', coverProperty.url);
+          return coverProperty.url;
+        }
+      }
+    }
+    
+    console.log('❌ No cover image found for page:', page.id);
     return null;
   }
 
@@ -262,6 +321,34 @@ class NotionClient {
   }
 
   /**
+   * Generate a placeholder image URL based on post content
+   * @param {string} title - Post title
+   * @param {Array} tags - Post tags
+   * @returns {string} Placeholder image URL
+   */
+  generatePlaceholderImage(title, tags = []) {
+    // Create a simple placeholder using a service like Unsplash or generate one
+    const primaryTag = tags[0] || 'blog';
+    const encodedTitle = encodeURIComponent(title.substring(0, 50));
+    
+    // Use Unsplash for high-quality placeholder images based on content
+    const unsplashCategories = {
+      'product': 'business,technology',
+      'management': 'business,office',
+      'strategy': 'business,planning',
+      'analytics': 'data,charts',
+      'career': 'success,growth',
+      'iit': 'education,university',
+      'oyo': 'travel,hotel',
+      'data': 'technology,analytics',
+      'operations': 'business,workflow'
+    };
+    
+    const category = unsplashCategories[primaryTag.toLowerCase()] || 'business,technology';
+    return `https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=400&fit=crop&crop=entropy&auto=format&q=80`;
+  }
+
+  /**
    * Mock data for development/fallback
    * @returns {Array} Mock blog posts
    */
@@ -277,7 +364,7 @@ class NotionClient {
         tags: ['Product Management', 'OYO', 'Operations'],
         status: 'Published',
         featured: true,
-        featuredImage: null,
+        featuredImage: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=400&fit=crop&crop=entropy&auto=format&q=80',
         readingTime: 5,
         url: 'https://www.notion.so/Prosora-Portfolio-Blog-Posts-23bcf31b151380a196f7dff950badaa9'
       },
@@ -290,7 +377,7 @@ class NotionClient {
         tags: ['Career', 'Product Strategy', 'IIT Bombay'],
         status: 'Published',
         featured: false,
-        featuredImage: null,
+        featuredImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=400&fit=crop&crop=entropy&auto=format&q=80',
         readingTime: 7,
         url: 'https://www.notion.so/Prosora-Portfolio-Blog-Posts-23bcf31b151380a196f7dff950badaa9'
       },
@@ -303,7 +390,7 @@ class NotionClient {
         tags: ['Analytics', 'Product Management', 'Data'],
         status: 'Published',
         featured: false,
-        featuredImage: null,
+        featuredImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop&crop=entropy&auto=format&q=80',
         readingTime: 6,
         url: 'https://www.notion.so/Prosora-Portfolio-Blog-Posts-23bcf31b151380a196f7dff950badaa9'
       },
@@ -316,7 +403,7 @@ class NotionClient {
         tags: ['Operations', 'Scaling', 'Process'],
         status: 'Published',
         featured: false,
-        featuredImage: null,
+        featuredImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=400&fit=crop&crop=entropy&auto=format&q=80',
         readingTime: 8,
         url: 'https://www.notion.so/Prosora-Portfolio-Blog-Posts-23bcf31b151380a196f7dff950badaa9'
       }
