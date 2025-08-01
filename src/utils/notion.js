@@ -32,19 +32,29 @@ class NotionClient {
   async request(endpoint, options = {}) {
     const url = `${NOTION_CONFIG.apiUrl}${endpoint}`;
     
+    console.log('🌐 Making request to:', url);
+    console.log('📋 Request headers:', this.headers);
+    console.log('⚙️ Request options:', options);
+    
     try {
       const response = await fetch(url, {
         headers: this.headers,
         ...options,
       });
 
+      console.log('📡 Response status:', response.status, response.statusText);
+      
       if (!response.ok) {
-        throw new Error(`Notion API error: ${response.status} ${response.statusText}`);
+        const errorText = await response.text();
+        console.error('❌ API Error Response:', errorText);
+        throw new Error(`Notion API error: ${response.status} ${response.statusText} - ${errorText}`);
       }
 
-      return await response.json();
+      const data = await response.json();
+      console.log('✅ API Response data:', data);
+      return data;
     } catch (error) {
-      console.error('Notion API request failed:', error);
+      console.error('💥 Notion API request failed:', error);
       throw error;
     }
   }
@@ -54,12 +64,26 @@ class NotionClient {
    * @returns {Promise<Array>} Array of blog posts
    */
   async getBlogPosts() {
+    console.log('🔍 getBlogPosts called - forcing mock data for now');
+    
+    // TEMPORARY: Always return mock data to test if blog section works
+    console.log('🎯 Returning mock data to test blog section');
+    return this.getMockPosts();
+    
+    /* ORIGINAL CODE - COMMENTED OUT FOR TESTING
+    console.log('🔍 Checking Notion configuration...');
+    console.log('Token exists:', !!NOTION_CONFIG.token);
+    console.log('Database ID:', NOTION_CONFIG.databaseId);
+    
     if (!NOTION_CONFIG.token || !NOTION_CONFIG.databaseId) {
-      console.warn('Notion configuration missing. Using mock data.');
+      console.warn('⚠️ Notion configuration missing. Using mock data.');
+      console.log('Token:', NOTION_CONFIG.token ? 'Present' : 'Missing');
+      console.log('Database ID:', NOTION_CONFIG.databaseId ? 'Present' : 'Missing');
       return this.getMockPosts();
     }
 
     try {
+      console.log('🚀 Making Notion API request...');
       const response = await this.request(`/databases/${NOTION_CONFIG.databaseId}/query`, {
         method: 'POST',
         body: JSON.stringify({
@@ -78,11 +102,24 @@ class NotionClient {
         })
       });
 
-      return response.results.map(this.transformNotionPage);
+      console.log('✅ Notion API response received:', response);
+      console.log('📊 Results count:', response.results?.length || 0);
+      
+      const transformedPosts = response.results.map(page => this.transformNotionPage(page));
+      console.log('🔄 Transformed posts:', transformedPosts);
+      
+      return transformedPosts;
     } catch (error) {
-      console.error('Failed to fetch blog posts:', error);
+      console.error('❌ Failed to fetch blog posts from Notion:', error);
+      console.error('Error details:', {
+        message: error.message,
+        status: error.status,
+        stack: error.stack
+      });
+      console.log('🔄 Falling back to mock data...');
       return this.getMockPosts();
     }
+    */
   }
 
   /**
@@ -222,12 +259,13 @@ class NotionClient {
    * @returns {Array} Mock blog posts
    */
   getMockPosts() {
+    console.log('📝 Returning mock blog posts');
     return [
       {
         id: 'mock-1',
         title: 'Product Management Lessons from OYO',
         slug: 'product-management-lessons-from-oyo',
-        excerpt: 'Key insights from managing product operations at OYO and working with chatbot "Yo".',
+        excerpt: 'Key insights from managing product operations at OYO and working with chatbot "Yo". Learn how to scale product operations and improve user experience.',
         date: '2025-01-20',
         tags: ['Product Management', 'OYO', 'Operations'],
         status: 'Published',
@@ -240,7 +278,7 @@ class NotionClient {
         id: 'mock-2',
         title: 'From IIT Bombay to Product Strategy',
         slug: 'from-iit-bombay-to-product-strategy',
-        excerpt: 'My journey from engineering to product management and the lessons learned along the way.',
+        excerpt: 'My journey from engineering to product management and the lessons learned along the way. Transitioning from technical roles to strategic thinking.',
         date: '2025-01-15',
         tags: ['Career', 'Product Strategy', 'IIT Bombay'],
         status: 'Published',
@@ -253,13 +291,26 @@ class NotionClient {
         id: 'mock-3',
         title: 'Data-Driven Decision Making in Product',
         slug: 'data-driven-decision-making-in-product',
-        excerpt: 'How to leverage analytics and data to make better product decisions.',
+        excerpt: 'How to leverage analytics and data to make better product decisions. Building a culture of experimentation and measurement.',
         date: '2025-01-10',
         tags: ['Analytics', 'Product Management', 'Data'],
         status: 'Published',
         featured: false,
         featuredImage: null,
         readingTime: 6,
+        url: 'https://www.notion.so/Prosora-Portfolio-Blog-Posts-23bcf31b151380a196f7dff950badaa9'
+      },
+      {
+        id: 'mock-4',
+        title: 'Building Scalable Product Operations',
+        slug: 'building-scalable-product-operations',
+        excerpt: 'Strategies for scaling product operations and maintaining quality as your team grows. Process optimization and team coordination.',
+        date: '2025-01-05',
+        tags: ['Operations', 'Scaling', 'Process'],
+        status: 'Published',
+        featured: false,
+        featuredImage: null,
+        readingTime: 8,
         url: 'https://www.notion.so/Prosora-Portfolio-Blog-Posts-23bcf31b151380a196f7dff950badaa9'
       }
     ];
@@ -309,7 +360,18 @@ export const blogAPI = {
    * Get all published blog posts
    * @returns {Promise<Array>} Blog posts
    */
-  getPosts: () => notionClient.getBlogPosts(),
+  getPosts: async () => {
+    console.log('🚀 blogAPI.getPosts called');
+    try {
+      const result = await notionClient.getBlogPosts();
+      console.log('✅ blogAPI.getPosts result:', result);
+      return result;
+    } catch (error) {
+      console.error('❌ blogAPI.getPosts error:', error);
+      // Force return mock data if anything fails
+      return notionClient.getMockPosts();
+    }
+  },
 
   /**
    * Get a specific blog post

@@ -16,13 +16,24 @@ const BlogSection = () => {
     const loadPosts = async () => {
       try {
         setLoading(true);
+        console.log('🔄 Loading blog posts from Notion...');
+        
         const blogPosts = await blogAPI.getPosts();
+        console.log('✅ Blog posts loaded:', blogPosts.length, 'posts');
+        console.log('📝 Posts data:', blogPosts);
+        
         setPosts(blogPosts);
         setFilteredPosts(blogPosts);
       } catch (error) {
-        console.error('Failed to load blog posts:', error);
+        console.error('❌ Failed to load blog posts:', error);
+        console.error('Error details:', error.message, error.stack);
+        
+        // Set empty array on error to show "no posts" message
+        setPosts([]);
+        setFilteredPosts([]);
       } finally {
         setLoading(false);
+        console.log('🏁 Blog loading completed');
       }
     };
 
@@ -83,6 +94,9 @@ const BlogSection = () => {
     );
   }
 
+  // Debug: Always show posts count
+  console.log('🔍 Blog render - Posts:', posts.length, 'Filtered:', filteredPosts.length, 'Loading:', loading);
+
   return (
     <>
       {/* Blog Header Section - matching original structure */}
@@ -131,6 +145,7 @@ const BlogSection = () => {
                 <div className="text-center py-12">
                   <p className="text-gray-600 text-lg">No blog posts found.</p>
                   <p className="text-gray-500 mt-2">Check back soon for insights and updates!</p>
+                  <p className="text-red-500 mt-2">Debug: Posts array length: {posts.length}</p>
                 </div>
               ) : (
                 <>
