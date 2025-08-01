@@ -76,7 +76,7 @@ class NotionClient {
     
     try {
       console.log('🚀 Making request to API proxy...');
-      const apiUrl = '/api/notion-blog';
+      const apiUrl = '/api/blog';
       console.log('📍 API URL:', apiUrl);
       
       const response = await fetch(apiUrl);
