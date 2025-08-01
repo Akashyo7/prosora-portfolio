@@ -1,48 +1,35 @@
-// Simple, reliable blog service
-// No API calls, no CORS issues, just works!
-
+// Ultra-simple blog service - just imports JSON, always works!
 import blogPosts from '../data/blog-posts.json';
 
 export const blogService = {
   /**
-   * Get all blog posts
-   * @returns {Promise<Array>} Blog posts
+   * Get all blog posts - instant, reliable, no API calls
    */
-  async getPosts() {
+  getPosts() {
     console.log('📚 Loading blog posts from static data');
     console.log(`✅ Found ${blogPosts.length} posts`);
+    console.log('📝 Posts:', blogPosts.map(p => p.title));
     
-    // Simulate async behavior for consistency
-    return new Promise(resolve => {
-      setTimeout(() => resolve(blogPosts), 100);
-    });
+    return Promise.resolve(blogPosts);
   },
 
   /**
    * Get a specific post by slug
-   * @param {string} slug - Post slug
-   * @returns {Promise<Object|null>} Blog post
    */
-  async getPost(slug) {
+  getPost(slug) {
     const post = blogPosts.find(p => p.slug === slug);
-    return new Promise(resolve => {
-      setTimeout(() => resolve(post || null), 100);
-    });
+    return Promise.resolve(post || null);
   },
 
   /**
    * Get posts by tag
-   * @param {string} tag - Tag name
-   * @returns {Promise<Array>} Filtered posts
    */
-  async getPostsByTag(tag) {
+  getPostsByTag(tag) {
     const filtered = blogPosts.filter(post => 
       post.tags.some(postTag => 
         postTag.toLowerCase() === tag.toLowerCase()
       )
     );
-    return new Promise(resolve => {
-      setTimeout(() => resolve(filtered), 100);
-    });
+    return Promise.resolve(filtered);
   }
 };

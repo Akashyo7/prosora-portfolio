@@ -1,0 +1,142 @@
+# GitHub Action to automatically update blog posts from Notion
+# Runs every hour and commits fresh data
+
+name: Update Blog Posts
+
+on:
+  schedule:
+    # Run every hour
+    - cron: '0 * * * *'
+  workflow_dispatch: # Allow manual trigger
+  push:
+    branches: [ main ]
+    paths: [ '.github/workflows/update-blog.yml' ]
+
+jobs:
+  update-blog:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Fetch blog posts from Notion
+      env:
+        NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+      run: |
+        node -e "
+        const fs = require('fs');
+        
+        async function fetchPosts() {
+          try {
+            console.log('🚀 Fetching from Notion...');
+            
+            const response = await fetch('https://api.notion.com/v1/databases/' + process.env.NOTION_DATABASE_ID + '/query', {
+              method: 'POST',
+              headers: {
+                'Authorization': 'Bearer ' + process.env.NOTION_TOKEN,
+                'Notion-Version': '2022-06-28',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ page_size: 100 })
+            });
+            
+            if (!response.ok) {
+              throw new Error('Notion API error: ' + response.status);
+            }
+            
+            const data = await response.json();
+            console.log('✅ Found ' + data.results.length + ' posts');
+            
+            const posts = data.results.map(page => {
+              const props = page.properties;
+              
+              const getText = (prop) => {
+                if (!prop) return '';
+                if (prop.rich_text) return prop.rich_text.map(t => t.plain_text).join('');
+                if (prop.title) return prop.title.map(t => t.plain_text).join('');
+                return '';
+              };
+              
+              const title = getText(props.Title || props.Name || props.title) || 'Untitled';
+              
+              return {
+                id: page.id,
+                title,
+                slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+                excerpt: getText(props.Excerpt || props.Description || props.excerpt) || '',
+                date: props.Date?.date?.start || props.Created?.date?.start || new Date().toISOString().split('T')[0],
+                tags: props.Tags?.multi_select?.map(t => t.name) || [],
+                featuredImage: page.cover?.external?.url || page.cover?.file?.url || null,
+                url: page.url || 'https://notion.so/' + page.id.replace(/-/g, ''),
+                lastUpdated: new Date().toISOString()
+              };
+            });
+            
+            fs.writeFileSync('src/data/blog-posts.json', JSON.stringify(posts, null, 2));
+            console.log('✅ Blog posts updated!');
+            
+          } catch (error) {
+            console.error('❌ Error:', error.message);
+            
+            // Create fallback data if API fails
+            const fallback = [
+              {
+                id: 'fallback-1',
+                title: 'Product Management Lessons from OYO',
+                slug: 'product-management-lessons-from-oyo',
+                excerpt: 'Key insights from managing product operations at OYO and working with chatbot Yo.',
+                date: '2025-01-20',
+                tags: ['Product Management', 'OYO'],
+                featuredImage: null,
+                url: 'https://www.notion.so/23bcf31b151380cab3f0ff3635d58a65',
+                lastUpdated: new Date().toISOString()
+              },
+              {
+                id: 'fallback-2', 
+                title: 'From IIT Bombay to Product Strategy',
+                slug: 'from-iit-bombay-to-product-strategy',
+                excerpt: 'My journey from engineering to product management and strategic thinking.',
+                date: '2025-01-15',
+                tags: ['Career', 'Strategy'],
+                featuredImage: null,
+                url: 'https://www.notion.so/23bcf31b151380cab3f0ff3635d58a65',
+                lastUpdated: new Date().toISOString()
+              }
+            ];
+            
+            fs.writeFileSync('src/data/blog-posts.json', JSON.stringify(fallback, null, 2));
+            console.log('📝 Created fallback data');
+          }
+        }
+        
+        fetchPosts();
+        "
+    
+    - name: Check for changes
+      id: verify-changed-files
+      run: |
+        if git diff --quiet src/data/blog-posts.json; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+          echo "No changes detected"
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+          echo "Changes detected"
+        fi
+    
+    - name: Commit and push changes
+      if: steps.verify-changed-files.outputs.changed == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add src/data/blog-posts.json
+        git commit -m "🔄 Auto-update blog posts from Notion [$(date +'%Y-%m-%d %H:%M')]"
+        git push
