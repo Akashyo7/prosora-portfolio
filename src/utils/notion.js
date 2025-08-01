@@ -64,13 +64,6 @@ class NotionClient {
    * @returns {Promise<Array>} Array of blog posts
    */
   async getBlogPosts() {
-    console.log('🔍 getBlogPosts called - forcing mock data for now');
-    
-    // TEMPORARY: Always return mock data to test if blog section works
-    console.log('🎯 Returning mock data to test blog section');
-    return this.getMockPosts();
-    
-    /* ORIGINAL CODE - COMMENTED OUT FOR TESTING
     console.log('🔍 Checking Notion configuration...');
     console.log('Token exists:', !!NOTION_CONFIG.token);
     console.log('Database ID:', NOTION_CONFIG.databaseId);
@@ -84,26 +77,22 @@ class NotionClient {
 
     try {
       console.log('🚀 Making Notion API request...');
+      // Get all pages from the database (no filter to see what's available)
       const response = await this.request(`/databases/${NOTION_CONFIG.databaseId}/query`, {
         method: 'POST',
         body: JSON.stringify({
-          filter: {
-            property: 'Status',
-            select: {
-              equals: 'Published'
-            }
-          },
-          sorts: [
-            {
-              property: 'Date',
-              direction: 'descending'
-            }
-          ]
+          // Remove sorts for now to avoid property name issues
+          page_size: 100
         })
       });
 
       console.log('✅ Notion API response received:', response);
       console.log('📊 Results count:', response.results?.length || 0);
+      
+      if (!response.results || response.results.length === 0) {
+        console.log('📝 No published posts found in Notion, using mock data');
+        return this.getMockPosts();
+      }
       
       const transformedPosts = response.results.map(page => this.transformNotionPage(page));
       console.log('🔄 Transformed posts:', transformedPosts);
@@ -119,7 +108,6 @@ class NotionClient {
       console.log('🔄 Falling back to mock data...');
       return this.getMockPosts();
     }
-    */
   }
 
   /**
@@ -154,19 +142,38 @@ class NotionClient {
    * @returns {Object} Transformed blog post
    */
   transformNotionPage(page) {
+    console.log('🔄 Transforming Notion page:', page.id);
+    console.log('📋 Available properties:', Object.keys(page.properties));
+    
     const properties = page.properties;
+    
+    // Try different possible property names
+    const titleProperty = properties.Title || properties.Name || properties.title || properties.name;
+    const statusProperty = properties.Status || properties.status;
+    const dateProperty = properties.Date || properties.date || properties.Created;
+    const tagsProperty = properties.Tags || properties.tags || properties.Category;
+    const excerptProperty = properties.Excerpt || properties.excerpt || properties.Description;
+    
+    const title = this.extractText(titleProperty) || 'Untitled Post';
+    
+    console.log('📝 Extracted data:', {
+      title,
+      status: statusProperty?.select?.name,
+      date: dateProperty?.date?.start,
+      tags: tagsProperty?.multi_select?.length || 0
+    });
     
     return {
       id: page.id,
-      title: this.extractText(properties.Title || properties.Name),
-      slug: this.generateSlug(this.extractText(properties.Title || properties.Name)),
-      excerpt: this.extractText(properties.Excerpt) || '',
-      date: properties.Date?.date?.start || new Date().toISOString().split('T')[0],
-      tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
-      status: properties.Status?.select?.name || 'Draft',
+      title,
+      slug: this.generateSlug(title),
+      excerpt: this.extractText(excerptProperty) || '',
+      date: dateProperty?.date?.start || new Date().toISOString().split('T')[0],
+      tags: tagsProperty?.multi_select?.map(tag => tag.name) || [],
+      status: statusProperty?.select?.name || 'Published', // Default to Published if no status
       featured: properties.Featured?.checkbox || false,
       featuredImage: this.extractCoverImage(page),
-      readingTime: this.calculateReadingTime(this.extractText(properties.Content) || ''),
+      readingTime: this.calculateReadingTime(this.extractText(excerptProperty) || ''),
       lastModified: page.last_edited_time,
       // Use the actual Notion page URL for direct access
       url: page.url || `https://notion.so/${page.id.replace(/-/g, '')}`
