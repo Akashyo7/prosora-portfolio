@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "npm run fetch-blog && vite",
+    "dev:quick": "vite",
     "build": "npm run fetch-blog && vite build",
     "build:quick": "vite build",
     "fetch-blog": "node scripts/fetch-blog-posts.js",
