@@ -136,7 +136,7 @@ const HeroSection = () => {
       className="intro min-h-screen flex items-center relative"
       aria-label="Hero section introducing Akash Yadav with elegant headphone animation"
       role="banner"
-      style={{ paddingTop: '80px', overflow: 'visible', backgroundColor: '#000', color: '#fff' }}
+      style={{ overflow: 'visible', backgroundColor: '#000', color: '#fff' }}
       aria-live={shouldDisableAnimations ? "polite" : "off"}
     >
       {/* Responsive Layout - Three-column on all devices */}
@@ -180,7 +180,6 @@ const HeroSection = () => {
           <motion.img
             src="/assets/akash-profile.jpg"
             alt="Akash Yadav - Portfolio Picture"
-            className="image object-cover rounded-lg shadow-lg relative z-10"
             className="hero-profile-image"
             whileHover={shouldDisableAnimations ? {} : { scale: 1.02 }}
             transition={shouldDisableAnimations ? { duration: 0 } : { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -208,8 +207,8 @@ const HeroSection = () => {
             <motion.div
               style={{
                 position: 'absolute',
-                top: `calc(50px * var(--headphone-scale, 1))`, // Moved up to meet navbar elegantly
-                left: `calc(-1 * var(--headphone-position-offset, 600px))`, // Responsive screen edge position with fallback
+                top: `calc(80px * var(--headphone-scale, 1))`, // Moved down to accommodate connector dot inside
+                left: `calc(-1 * var(--headphone-position-offset, 520px))`, // Responsive screen edge position with fallback
                 width: `calc(160px * var(--headphone-scale, 1))`,
                 height: `calc(200px * var(--headphone-scale, 1))`,
                 background: 'linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.4))',
@@ -280,8 +279,8 @@ const HeroSection = () => {
             <motion.div
               style={{
                 position: 'absolute',
-                top: `calc(50px * var(--headphone-scale, 1))`, // Moved up to meet navbar elegantly
-                right: `calc(-1 * var(--headphone-position-offset, 600px))`, // Responsive screen edge position with fallback - aligned with left
+                top: `calc(80px * var(--headphone-scale, 1))`, // Moved down to match left cup and accommodate connector dot inside
+                right: `calc(-1 * var(--headphone-position-offset, 520px))`, // Responsive screen edge position - aligned with left
                 width: `calc(160px * var(--headphone-scale, 1))`,
                 height: `calc(200px * var(--headphone-scale, 1))`,
                 background: 'linear-gradient(225deg, rgba(0,0,0,0.7), rgba(0,0,0,0.4))',
@@ -296,19 +295,19 @@ const HeroSection = () => {
               transition={shouldDisableAnimations ? { duration: 0 } : { delay: 1.5, duration: 2.5, ease: [0.25, 0.46, 0.45, 0.94] }}
             />
 
-            {/* Left Vertical Line - From left cup to navbar with Audio Visualizer */}
+            {/* Left Vertical Line - From top of left headphone cup to navbar */}
             <motion.div
               style={{
                 position: 'absolute',
-                top: '-160px', // Extends much higher to actually reach navbar
-                left: '-520px', // Aligned with perfect left cup center position
-                width: '4px',
-                height: '500px', // Much taller to merge with navbar
-                background: 'linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7), rgba(0,0,0,0.4))',
-                borderRadius: '2px',
-                filter: 'blur(0.5px)',
+                top: '-160px', // Start from navbar area
+                left: `calc(-1 * var(--headphone-position-offset, 520px) + 60px)`, // Positioned at inner edge of left cup
+                width: '2px', // Thinner, more elegant bar
+                height: `calc(240px * var(--headphone-scale, 1))`, // Height to reach exactly the top of headphone cup
+                background: 'linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7), rgba(0,0,0,0.5))',
+                borderRadius: '1px',
+                filter: 'blur(0.3px)',
                 zIndex: 24,
-                transformOrigin: 'bottom',
+                transformOrigin: 'top', // Scale from top down
                 transform: 'translate3d(0, 0, 0)', // GPU acceleration
                 willChange: 'transform, opacity' // Performance optimization
               }}
@@ -325,15 +324,15 @@ const HeroSection = () => {
                   style={{
                     position: 'absolute',
                     top: '-160px',
-                    left: '-521px',
-                    width: '4px',
-                    height: '500px',
+                    left: `calc(-1 * var(--headphone-position-offset, 520px) + 59px)`, // Aligned with inner edge bar position
+                    width: '2px', // Matching the thinner bar width
+                    height: `calc(240px * var(--headphone-scale, 1))`, // Matching the new bar height
                     background: isPlaying && !isMuted
                       ? 'linear-gradient(180deg, rgba(34, 197, 94, 0.06), rgba(34, 197, 94, 0.03), rgba(0,0,0,0.02))' // Subtle green tint when playing
                       : 'linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.05), rgba(0,0,0,0.02))',
-                    borderRadius: '2px',
+                    borderRadius: '1px',
                     zIndex: 23,
-                    transformOrigin: 'bottom',
+                    transformOrigin: 'top',
                     transform: 'translate3d(0, 0, 0)', // GPU acceleration
                     willChange: 'opacity, background' // Performance optimization
                   }}
@@ -351,19 +350,19 @@ const HeroSection = () => {
               </>
             )}
 
-            {/* Right Vertical Line - From right cup to navbar with Audio Visualizer */}
+            {/* Right Vertical Line - From top of right headphone cup to navbar */}
             <motion.div
               style={{
                 position: 'absolute',
-                top: '-160px', // Extends much higher to actually reach navbar
-                right: '-540px', // Aligned with perfect right cup center position
-                width: '4px',
-                height: '500px', // Much taller to merge with navbar
-                background: 'linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7), rgba(0,0,0,0.4))',
-                borderRadius: '2px',
-                filter: 'blur(0.5px)',
+                top: '-160px', // Start from navbar area
+                right: `calc(-1 * var(--headphone-position-offset, 520px) + 60px)`, // Positioned at inner edge of right cup
+                width: '2px', // Thinner, more elegant bar
+                height: `calc(240px * var(--headphone-scale, 1))`, // Height to reach exactly the top of headphone cup
+                background: 'linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7), rgba(0,0,0,0.5))',
+                borderRadius: '1px',
+                filter: 'blur(0.3px)',
                 zIndex: 24,
-                transformOrigin: 'bottom',
+                transformOrigin: 'top', // Scale from top down
                 transform: 'translate3d(0, 0, 0)', // GPU acceleration
                 willChange: 'transform, opacity' // Performance optimization
               }}
@@ -380,15 +379,15 @@ const HeroSection = () => {
                   style={{
                     position: 'absolute',
                     top: '-160px',
-                    right: '-541px',
-                    width: '4px',
-                    height: '500px',
+                    right: `calc(-1 * var(--headphone-position-offset, 520px) + 59px)`, // Aligned with inner edge bar position
+                    width: '2px', // Matching the thinner bar width
+                    height: `calc(240px * var(--headphone-scale, 1))`, // Matching the new bar height
                     background: isPlaying && !isMuted
                       ? 'linear-gradient(180deg, rgba(34, 197, 94, 0.06), rgba(34, 197, 94, 0.03), rgba(0,0,0,0.02))' // Subtle green tint when playing
                       : 'linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.05), rgba(0,0,0,0.02))',
-                    borderRadius: '2px',
+                    borderRadius: '1px',
                     zIndex: 23,
-                    transformOrigin: 'bottom',
+                    transformOrigin: 'top',
                     transform: 'translate3d(0, 0, 0)', // GPU acceleration
                     willChange: 'opacity, background' // Performance optimization
                   }}
@@ -409,14 +408,14 @@ const HeroSection = () => {
 
             {/* Elegant Music Status Indicator Dots - Like Headphone "On" Lights */}
 
-            {/* Left Music Status Dot */}
+            {/* Left Music Status Dot - Aligned with headphone bar */}
             <motion.div
               style={{
                 position: 'absolute',
-                top: '280px',
-                left: '-520px', // Aligned with perfect left cup center
-                width: '8px',
-                height: '8px',
+                top: `calc(260px * var(--headphone-scale, 1))`, // Positioned at bottom of headphone cup
+                left: `calc(-1 * var(--headphone-position-offset, 520px) + 60px)`, // Aligned with inner edge bar
+                width: '6px',
+                height: '6px',
                 borderRadius: '50%',
                 zIndex: 26,
                 cursor: 'pointer',
@@ -449,14 +448,14 @@ const HeroSection = () => {
               }}
             />
 
-            {/* Right Music Status Dot */}
+            {/* Right Music Status Dot - Aligned with headphone bar */}
             <motion.div
               style={{
                 position: 'absolute',
-                top: '280px',
-                right: '-540px', // Aligned with perfect right cup center
-                width: '8px',
-                height: '8px',
+                top: `calc(260px * var(--headphone-scale, 1))`, // Positioned at bottom of headphone cup
+                right: `calc(-1 * var(--headphone-position-offset, 520px) + 60px)`, // Aligned with inner edge bar
+                width: '6px',
+                height: '6px',
                 borderRadius: '50%',
                 zIndex: 26,
                 cursor: 'pointer',
@@ -496,8 +495,8 @@ const HeroSection = () => {
                 <motion.div
                   style={{
                     position: 'absolute',
-                    top: '276px', // Slightly larger to create glow effect
-                    left: '-524px',
+                    top: '176px', // Adjusted to match new dot position
+                    left: `calc(-1 * var(--headphone-position-offset, 520px) + 12px)`, // Aligned with new dot position
                     width: '16px',
                     height: '16px',
                     borderRadius: '50%',
@@ -520,8 +519,8 @@ const HeroSection = () => {
                 <motion.div
                   style={{
                     position: 'absolute',
-                    top: '276px',
-                    right: '-544px',
+                    top: '176px', // Adjusted to match new dot position
+                    right: `calc(-1 * var(--headphone-position-offset, 520px) + 12px)`, // Aligned with new dot position
                     width: '16px',
                     height: '16px',
                     borderRadius: '50%',

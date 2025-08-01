@@ -128,9 +128,11 @@ class NotionClient {
       tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
       status: properties.Status?.select?.name || 'Draft',
       featured: properties.Featured?.checkbox || false,
+      featuredImage: this.extractCoverImage(page),
       readingTime: this.calculateReadingTime(this.extractText(properties.Content) || ''),
       lastModified: page.last_edited_time,
-      url: `/blog/${this.generateSlug(this.extractText(properties.Title || properties.Name))}`
+      // Use the actual Notion page URL for direct access
+      url: page.url || `https://notion.so/${page.id.replace(/-/g, '')}`
     };
   }
 
@@ -177,6 +179,22 @@ class NotionClient {
   }
 
   /**
+   * Extract cover image from Notion page
+   * @param {Object} page - Notion page object
+   * @returns {string|null} Cover image URL
+   */
+  extractCoverImage(page) {
+    if (page.cover) {
+      if (page.cover.type === 'external') {
+        return page.cover.external.url;
+      } else if (page.cover.type === 'file') {
+        return page.cover.file.url;
+      }
+    }
+    return null;
+  }
+
+  /**
    * Generate URL slug from title
    * @param {string} title - Post title
    * @returns {string} URL slug
@@ -214,8 +232,9 @@ class NotionClient {
         tags: ['Product Management', 'OYO', 'Operations'],
         status: 'Published',
         featured: true,
+        featuredImage: null,
         readingTime: 5,
-        url: '/blog/product-management-lessons-from-oyo'
+        url: 'https://www.notion.so/Prosora-Portfolio-Blog-Posts-23bcf31b151380a196f7dff950badaa9'
       },
       {
         id: 'mock-2',
@@ -226,8 +245,9 @@ class NotionClient {
         tags: ['Career', 'Product Strategy', 'IIT Bombay'],
         status: 'Published',
         featured: false,
+        featuredImage: null,
         readingTime: 7,
-        url: '/blog/from-iit-bombay-to-product-strategy'
+        url: 'https://www.notion.so/Prosora-Portfolio-Blog-Posts-23bcf31b151380a196f7dff950badaa9'
       },
       {
         id: 'mock-3',
@@ -238,8 +258,9 @@ class NotionClient {
         tags: ['Analytics', 'Product Management', 'Data'],
         status: 'Published',
         featured: false,
+        featuredImage: null,
         readingTime: 6,
-        url: '/blog/data-driven-decision-making-in-product'
+        url: 'https://www.notion.so/Prosora-Portfolio-Blog-Posts-23bcf31b151380a196f7dff950badaa9'
       }
     ];
   }
