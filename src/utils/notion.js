@@ -70,17 +70,31 @@ class NotionClient {
    * @returns {Promise<Array>} Array of blog posts
    */
   async getBlogPosts() {
-    console.log('🔍 getBlogPosts() called - using API proxy');
+    console.log('🔍 getBlogPosts() called - testing API proxy');
+    console.log('🌍 Current URL:', window.location.href);
+    console.log('🔧 Environment:', import.meta.env.MODE);
     
     try {
       console.log('🚀 Making request to API proxy...');
-      const response = await fetch('/api/notion-blog');
+      const apiUrl = '/api/notion-blog';
+      console.log('📍 API URL:', apiUrl);
       
+      const response = await fetch(apiUrl);
       console.log('📡 API proxy response status:', response.status);
+      console.log('📡 API proxy response headers:', Object.fromEntries(response.headers.entries()));
       
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-        console.error('❌ API proxy error:', errorData);
+        console.error('❌ API proxy failed with status:', response.status);
+        const responseText = await response.text();
+        console.error('❌ API proxy error response:', responseText);
+        
+        // If it's a 404, the API endpoint doesn't exist (local dev issue)
+        if (response.status === 404) {
+          console.warn('⚠️ API endpoint not found - likely running in local dev mode');
+          console.log('💡 Trying direct Notion API for local development...');
+          return this.getBlogPostsDirect();
+        }
+        
         console.log('🔄 Falling back to mock data...');
         return this.getMockPosts();
       }
@@ -98,6 +112,68 @@ class NotionClient {
       
     } catch (error) {
       console.error('❌ Failed to fetch blog posts via API proxy:', error);
+      console.error('❌ Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+      console.log('🔄 Falling back to mock data...');
+      return this.getMockPosts();
+    }
+  }
+
+  /**
+   * Direct Notion API call for local development
+   * @returns {Promise<Array>} Array of blog posts
+   */
+  async getBlogPostsDirect() {
+    console.log('🔍 getBlogPostsDirect() called for local development');
+    console.log('Token exists:', !!NOTION_CONFIG.token);
+    console.log('Database ID:', NOTION_CONFIG.databaseId);
+    
+    if (!NOTION_CONFIG.token || !NOTION_CONFIG.databaseId) {
+      console.warn('⚠️ Notion configuration missing. Using mock data.');
+      return this.getMockPosts();
+    }
+
+    try {
+      console.log('🚀 Making direct Notion API request...');
+      const response = await fetch(`https://api.notion.com/v1/databases/${NOTION_CONFIG.databaseId}/query`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${NOTION_CONFIG.token}`,
+          'Notion-Version': NOTION_CONFIG.version,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          page_size: 100
+        })
+      });
+
+      console.log('📡 Direct Notion API response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Direct Notion API error:', errorText);
+        console.log('🔄 Falling back to mock data...');
+        return this.getMockPosts();
+      }
+
+      const data = await response.json();
+      console.log('✅ Direct Notion API response received:', data);
+      console.log('📊 Results count:', data.results?.length || 0);
+      
+      if (!data.results || data.results.length === 0) {
+        console.log('📝 No posts found in Notion, using mock data');
+        return this.getMockPosts();
+      }
+      
+      const transformedPosts = data.results.map(page => this.transformNotionPage(page));
+      console.log('🔄 Transformed posts:', transformedPosts);
+      
+      return transformedPosts;
+    } catch (error) {
+      console.error('❌ Direct Notion API failed:', error);
       console.log('🔄 Falling back to mock data...');
       return this.getMockPosts();
     }
