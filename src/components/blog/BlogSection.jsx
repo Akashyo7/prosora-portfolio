@@ -222,7 +222,10 @@ const BlogSection = () => {
                                   </div>
                                   {post.excerpt && (
                                     <div className="blog-post-excerpt">
-                                      {post.excerpt.substring(0, 80)}...
+                                      {post.excerpt.length > 60 
+                                        ? post.excerpt.substring(0, 60).trim() + '...' 
+                                        : post.excerpt
+                                      }
                                     </div>
                                   )}
                                   <div className="blog-read-more blog-notion-link">
