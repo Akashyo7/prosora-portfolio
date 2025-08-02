@@ -27,8 +27,8 @@ const BlogSection = () => {
           console.log(`📄 Post ${index + 1}:`, {
             title: post.title,
             excerpt: post.excerpt?.substring(0, 50) + '...',
-            featuredImage: post.featuredImage,
-            date: post.date,
+            coverImage: post.coverImage,
+            publishedDate: post.publishedDate,
             tags: post.tags
           });
         });
@@ -178,17 +178,17 @@ const BlogSection = () => {
                                 {/* Blog Post Image Container */}
                                 <div className="blog-image-container">
                                   <div className="blog-image-wrapper">
-                                    {post.featuredImage ? (
+                                    {post.coverImage ? (
                                       <img
-                                        src={post.featuredImage}
+                                        src={post.coverImage}
                                         alt={post.title}
                                         className="blog-image"
                                         loading="lazy"
                                         onLoad={() => {
-                                          console.log('✅ Image loaded successfully:', post.featuredImage);
+                                          console.log('✅ Cover image loaded successfully:', post.coverImage);
                                         }}
                                         onError={(e) => {
-                                          console.error('❌ Image failed to load:', post.featuredImage);
+                                          console.error('❌ Cover image failed to load:', post.coverImage);
                                           e.target.style.display = 'none';
                                           e.target.parentElement.innerHTML = `
                                             <div class="blog-image-placeholder">
@@ -214,7 +214,7 @@ const BlogSection = () => {
                                 {/* Blog Post Info - Work Section Style */}
                                 <div className="blog-text-container">
                                   <div className="blog-post-meta">
-                                    {post.tags[0] || 'BLOG POST'} • {new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                    {post.tags[0] || 'BLOG POST'} • {new Date(post.publishedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                   </div>
                                   <div className="blog-post-title">
                                     "{post.title}"
