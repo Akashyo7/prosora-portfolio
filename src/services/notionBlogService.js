@@ -163,12 +163,7 @@ class NotionBlogService {
     const excerpt = this.extractText(properties.Excerpt) || '';
     const publishedDate = properties['Published Date']?.date?.start || page.created_time;
     
-    // Debug cover image extraction
-    console.log(`🔍 Parsing post: "${title}"`);
-    console.log('📋 Raw page cover data:', page.cover);
-    
     const coverImage = this.extractCoverImage(page);
-    console.log('🖼️ Extracted cover image:', coverImage);
     
     return {
       id: page.id,

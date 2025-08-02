@@ -5,7 +5,7 @@ import notionBlogService from '../../services/notionBlogService.js';
 import { getAccessibleVariants } from '../../utils/accessibility.js';
 import './BlogSection.css';
 
-const BlogSection = ({ onPostClick }) => {
+const BlogSection = () => {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,23 +22,8 @@ const BlogSection = ({ onPostClick }) => {
         console.log('✅ Blog posts loaded:', blogPosts.length, 'posts');
         console.log('📝 Posts data:', blogPosts);
         
-        // Debug each post's image and content
-        blogPosts.forEach((post, index) => {
-          console.log(`📄 Post ${index + 1}:`, {
-            title: post.title,
-            excerpt: post.excerpt?.substring(0, 50) + '...',
-            coverImage: post.coverImage,
-            publishedDate: post.publishedDate,
-            tags: post.tags
-          });
-          
-          // Detailed cover image debugging
-          if (post.coverImage) {
-            console.log(`🖼️ Cover image for "${post.title}":`, post.coverImage);
-          } else {
-            console.log(`❌ No cover image for "${post.title}"`);
-          }
-        });
+        // Log successful blog loading
+        console.log(`✅ Successfully loaded ${blogPosts.length} blog posts from Notion`);
         
         setPosts(blogPosts);
         setFilteredPosts(blogPosts);
@@ -176,10 +161,11 @@ const BlogSection = ({ onPostClick }) => {
                         <>
                           {currentPosts.map((post) => (
                             <div key={post.id} className="blog-card">
-                              <button
-                                onClick={() => onPostClick && onPostClick(post.slug)}
-                                className="blog-card-link block group w-full text-left"
-                                style={{ background: 'none', border: 'none', padding: 0 }}
+                              <a
+                                href={post.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="blog-card-link block group"
                               >
                                 {/* Blog Post Image Container */}
                                 <div className="blog-image-container">
@@ -191,27 +177,27 @@ const BlogSection = ({ onPostClick }) => {
                                         className="blog-image"
                                         loading="lazy"
                                         onLoad={() => {
-                                          console.log('✅ Cover image loaded successfully:', post.coverImage);
+                                          // Image loaded successfully
                                         }}
                                         onError={(e) => {
-                                          console.error('❌ Cover image failed to load:', post.coverImage);
-                                          console.error('❌ Image error details:', e);
+                                          // Replace with beautiful gradient placeholder
                                           e.target.style.display = 'none';
                                           e.target.parentElement.innerHTML = `
-                                            <div class="blog-image-placeholder">
+                                            <div class="blog-image-placeholder blog-gradient-placeholder">
                                               <div class="placeholder-content">
-                                                <div class="placeholder-icon">📝</div>
-                                                <div class="placeholder-text">Blog Post</div>
+                                                <div class="placeholder-icon">📖</div>
+                                                <div class="placeholder-text">${post.title.substring(0, 20)}...</div>
                                               </div>
                                             </div>
                                           `;
                                         }}
                                       />
                                     ) : (
-                                      <div className="blog-image-placeholder">
+                                      <div className="blog-image-placeholder blog-gradient-placeholder">
                                         <div className="placeholder-content">
-                                          <div className="placeholder-icon">📝</div>
-                                          <div className="placeholder-text">Blog Post</div>
+                                          <div className="placeholder-icon">📖</div>
+                                          <div className="placeholder-text">{post.title.substring(0, 20)}...</div>
+                                          <div className="placeholder-subtitle">Read on Notion</div>
                                         </div>
                                       </div>
                                     )}
@@ -231,11 +217,12 @@ const BlogSection = ({ onPostClick }) => {
                                       {post.excerpt.substring(0, 80)}...
                                     </div>
                                   )}
-                                  <div className="blog-read-more">
-                                    Read More →
+                                  <div className="blog-read-more blog-notion-link">
+                                    <span>Read Full Post</span>
+                                    <span className="notion-badge">on Notion →</span>
                                   </div>
                                 </div>
-                              </button>
+                              </a>
                             </div>
                           ))}
                           
