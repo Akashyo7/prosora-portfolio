@@ -218,100 +218,129 @@ const Header = () => {
         ))}
       </div>
 
-      {/* Mobile Menu Button */}
+      {/* Modern Mobile Menu Button */}
       <div className="lg:hidden">
         <motion.button
           whileTap={{ scale: 0.95 }}
+          whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="text-white p-2"
+          className="hamburger-button"
           aria-label="Toggle mobile menu"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            {isMobileMenuOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            )}
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M4 6h16M4 12h16M4 18h16" 
+            />
           </svg>
         </motion.button>
       </div>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          className="lg:hidden absolute top-full left-0 right-0 bg-black bg-opacity-95 backdrop-blur-sm border-t border-gray-600"
-          style={{ gridColumn: '1 / -1' }}
-        >
-          <div className="flex flex-col space-y-4 p-6">
-            {navItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                onClick={(e) => handleSmoothScroll(e, item.href)}
-                className={`text-block transition-colors duration-200 py-2 ${
-                  activeSection === item.name.replace('my ', '') 
-                    ? 'text-blue-400' 
-                    : 'text-white hover:text-gray-300'
-                }`}
-              >
-                {item.name}
-              </a>
-            ))}
-            <a
-              href={resumeLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-block text-white hover:text-gray-300 transition-colors duration-200 py-2"
+      {/* Modern Full-Screen Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mobile-menu-overlay lg:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              className="mobile-menu-content"
+              onClick={(e) => e.stopPropagation()}
             >
-              resume
-            </a>
-            
-            {/* Mobile Social Icons & Music Control */}
-            <div className="flex items-center space-x-4 pt-4 border-t border-gray-600">
-              {/* Mobile Musical Note Toggle Button */}
-              <button
-                onClick={toggleMute}
-                className="transition-all duration-300"
-                aria-label={isMuted ? "Unmute music" : "Mute music"}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '18px',
-                  color: isMuted ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.9)',
-                  filter: isMuted ? 'grayscale(100%)' : 'none',
-                  padding: '4px',
-                  textDecoration: isMuted ? 'line-through' : 'none'
-                }}
+              {/* Close Button */}
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="self-end text-white p-2 hover:bg-white hover:bg-opacity-10 rounded-full transition-colors"
+                aria-label="Close menu"
               >
-                ♪
-              </button>
-              
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.url}
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </motion.button>
+
+              {/* Navigation Links */}
+              <nav className="mobile-menu-nav">
+                {navItems.map((item, index) => (
+                  <motion.a
+                    key={item.name}
+                    href={item.href}
+                    onClick={(e) => handleSmoothScroll(e, item.href)}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 + index * 0.1 }}
+                    className={`${
+                      activeSection === item.name.replace('my ', '') ? 'active' : ''
+                    }`}
+                  >
+                    {item.name}
+                  </motion.a>
+                ))}
+                <motion.a
+                  href={resumeLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:opacity-80 transition-opacity duration-200"
-                  aria-label={social.label}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + navItems.length * 0.1 }}
                 >
-                  <img
-                    src={formatImageUrl(`/assets/${getSocialIconPath(social.platform)}`)}
-                    alt={social.label}
-                    className="w-6 h-6"
-                    loading="lazy"
-                  />
-                </a>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      )}
+                  resume
+                </motion.a>
+              </nav>
+
+              {/* Social Icons & Music Control */}
+              <motion.div
+                className="mobile-menu-social"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + navItems.length * 0.1 }}
+              >
+                {/* Music Control */}
+                <button
+                  onClick={toggleMute}
+                  aria-label={isMuted ? "Unmute music" : "Mute music"}
+                  style={{
+                    color: isMuted ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.9)',
+                    filter: isMuted ? 'grayscale(100%)' : 'none',
+                    fontSize: '18px',
+                    textDecoration: isMuted ? 'line-through' : 'none'
+                  }}
+                >
+                  ♪
+                </button>
+                
+                {/* Social Links */}
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                  >
+                    <img
+                      src={formatImageUrl(`/assets/${getSocialIconPath(social.platform)}`)}
+                      alt={social.label}
+                      loading="lazy"
+                    />
+                  </a>
+                ))}
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.section>
   );
 };
