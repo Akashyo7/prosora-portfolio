@@ -115,8 +115,8 @@ const Header = () => {
         isScrolled ? 'shadow-lg' : ''
       }`}
       style={{
-        display: 'grid',
-        gridTemplateColumns: 'auto 1fr auto',
+        display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
         gap: '1rem'
       }}
@@ -218,33 +218,17 @@ const Header = () => {
         ))}
       </div>
 
-      {/* Mobile: Key Actions + Hamburger */}
-      <div className="lg:hidden flex items-center space-x-2">
-        {/* Mobile Music Control */}
-        <motion.button
-          onClick={toggleMute}
-          whileTap={{ scale: 0.95 }}
-          className="mobile-action-button"
-          aria-label={isMuted ? "Unmute music" : "Mute music"}
-          style={{
-            color: isMuted ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.9)',
-            filter: isMuted ? 'grayscale(100%)' : 'none',
-            textDecoration: isMuted ? 'line-through' : 'none'
-          }}
-        >
-          ♪
-        </motion.button>
-
+      {/* Mobile: Spotify-Style Horizontal Actions */}
+      <div className="mobile-actions-row lg:hidden">
         {/* Mobile Resume Button */}
         <motion.a
           href={resumeLink}
           target="_blank"
           rel="noopener noreferrer"
           whileTap={{ scale: 0.95 }}
-          className="mobile-action-button"
-          aria-label="View Resume"
+          className="mobile-text-btn"
         >
-          📄
+          Resume
         </motion.a>
 
         {/* Mobile Contact Button */}
@@ -252,21 +236,33 @@ const Header = () => {
           href="#contact"
           onClick={(e) => handleSmoothScroll(e, '#contact')}
           whileTap={{ scale: 0.95 }}
-          className="mobile-action-button"
-          aria-label="Contact"
+          className="mobile-text-btn"
         >
-          ✉️
+          Contact
         </motion.a>
+
+        {/* Mobile Music Control */}
+        <motion.button
+          onClick={toggleMute}
+          whileTap={{ scale: 0.95 }}
+          className="mobile-music-btn"
+          aria-label={isMuted ? "Unmute music" : "Mute music"}
+          style={{
+            color: isMuted ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255, 255, 255, 0.9)',
+            textDecoration: isMuted ? 'line-through' : 'none'
+          }}
+        >
+          ♪
+        </motion.button>
 
         {/* Hamburger Menu Button */}
         <motion.button
           whileTap={{ scale: 0.95 }}
-          whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="hamburger-button"
+          className="mobile-hamburger-btn"
           aria-label="Toggle mobile menu"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path 
               strokeLinecap="round" 
               strokeLinejoin="round" 
