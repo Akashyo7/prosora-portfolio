@@ -218,7 +218,7 @@ const Header = () => {
         ))}
       </div>
 
-      {/* Mobile: Spotify-Style Horizontal Actions */}
+      {/* Mobile: Clean Spotify-Style Layout (Contact removed to save space) */}
       <div className="mobile-actions-row lg:hidden">
         {/* Mobile Resume Button */}
         <motion.a
@@ -229,16 +229,6 @@ const Header = () => {
           className="mobile-text-btn"
         >
           Resume
-        </motion.a>
-
-        {/* Mobile Contact Button */}
-        <motion.a
-          href="#contact"
-          onClick={(e) => handleSmoothScroll(e, '#contact')}
-          whileTap={{ scale: 0.95 }}
-          className="mobile-text-btn"
-        >
-          Contact
         </motion.a>
 
         {/* Mobile Music Control */}
