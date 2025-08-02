@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock, Tag, ArrowRight } from 'lucide-react';
 import notionBlogService from '../../services/notionBlogService.js';
 import { getAccessibleVariants } from '../../utils/accessibility.js';
+import BlogModal from './BlogModal.jsx';
 import './BlogSection.css';
 
 const BlogSection = () => {
@@ -10,6 +11,8 @@ const BlogSection = () => {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Load blog posts
   useEffect(() => {
@@ -22,8 +25,11 @@ const BlogSection = () => {
         console.log('✅ Blog posts loaded:', blogPosts.length, 'posts');
         console.log('📝 Posts data:', blogPosts);
         
-        // Log successful blog loading
+        // Log successful blog loading and URLs for debugging
         console.log(`✅ Successfully loaded ${blogPosts.length} blog posts from Notion`);
+        blogPosts.forEach(post => {
+          console.log(`🔗 Post "${post.title}" URL:`, post.url);
+        });
         
         setPosts(blogPosts);
         setFilteredPosts(blogPosts);
@@ -161,11 +167,13 @@ const BlogSection = () => {
                         <>
                           {currentPosts.map((post) => (
                             <div key={post.id} className="blog-card">
-                              <a
-                                href={post.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="blog-card-link block group"
+                              <button
+                                onClick={() => {
+                                  setSelectedPost(post);
+                                  setIsModalOpen(true);
+                                }}
+                                className="blog-card-link block group w-full text-left"
+                                style={{ background: 'none', border: 'none', padding: 0 }}
                               >
                                 {/* Blog Post Image Container */}
                                 <div className="blog-image-container">
@@ -222,7 +230,7 @@ const BlogSection = () => {
                                     <span className="notion-badge">on Notion →</span>
                                   </div>
                                 </div>
-                              </a>
+                              </button>
                             </div>
                           ))}
                           
@@ -287,6 +295,16 @@ const BlogSection = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Blog Modal */}
+      <BlogModal
+        post={selectedPost}
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedPost(null);
+        }}
+      />
     </>
   );
 };

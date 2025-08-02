@@ -165,6 +165,9 @@ class NotionBlogService {
     
     const coverImage = this.extractCoverImage(page);
     
+    // Generate reliable Notion URL
+    const notionUrl = page.url || `https://www.notion.so/${page.id.replace(/-/g, '')}`;
+    
     return {
       id: page.id,
       title: title,
@@ -175,7 +178,7 @@ class NotionBlogService {
       status: properties.Status?.select?.name || 'Published',
       slug: this.createSlug(title),
       coverImage: coverImage,
-      url: page.url,
+      url: notionUrl,
       author: {
         name: 'Prosora',
         avatar: null
