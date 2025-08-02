@@ -87,7 +87,7 @@
   }
 }
 
-/* Mobile - Clean hamburger menu approach */
+/* Mobile - Clean layout with key actions visible */
 @media screen and (max-width: 767px) {
   .top_navigation_bar {
     padding: 0.75rem 1rem;
@@ -100,6 +100,12 @@
   .logo img {
     height: 2.5rem; /* Slightly smaller on mobile but still readable */
   }
+  
+  /* Ensure mobile actions are properly spaced */
+  .mobile-action-button {
+    min-width: 40px;
+    flex-shrink: 0;
+  }
 }
 
 /* Small mobile - Optimize for smallest screens */
@@ -107,10 +113,24 @@
   .top_navigation_bar {
     padding: 0.5rem 0.75rem;
     min-height: 56px;
+    gap: 0.75rem;
   }
   
   .logo img {
     height: 2rem;
+  }
+  
+  /* Slightly smaller action buttons on very small screens */
+  .mobile-action-button {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    font-size: 14px;
+  }
+  
+  .hamburger-button {
+    width: 40px;
+    height: 40px;
   }
 }
 
@@ -201,6 +221,33 @@
 .mobile-menu-social img {
   width: 20px;
   height: 20px;
+}
+
+/* Mobile Action Buttons */
+.mobile-action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  color: white;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+}
+
+.mobile-action-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.mobile-action-button:active {
+  transform: translateY(0);
 }
 
 /* Hamburger Menu Button */

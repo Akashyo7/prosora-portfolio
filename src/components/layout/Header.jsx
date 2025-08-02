@@ -218,8 +218,47 @@ const Header = () => {
         ))}
       </div>
 
-      {/* Modern Mobile Menu Button */}
-      <div className="lg:hidden">
+      {/* Mobile: Key Actions + Hamburger */}
+      <div className="lg:hidden flex items-center space-x-2">
+        {/* Mobile Music Control */}
+        <motion.button
+          onClick={toggleMute}
+          whileTap={{ scale: 0.95 }}
+          className="mobile-action-button"
+          aria-label={isMuted ? "Unmute music" : "Mute music"}
+          style={{
+            color: isMuted ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.9)',
+            filter: isMuted ? 'grayscale(100%)' : 'none',
+            textDecoration: isMuted ? 'line-through' : 'none'
+          }}
+        >
+          ♪
+        </motion.button>
+
+        {/* Mobile Resume Button */}
+        <motion.a
+          href={resumeLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          whileTap={{ scale: 0.95 }}
+          className="mobile-action-button"
+          aria-label="View Resume"
+        >
+          📄
+        </motion.a>
+
+        {/* Mobile Contact Button */}
+        <motion.a
+          href="#contact"
+          onClick={(e) => handleSmoothScroll(e, '#contact')}
+          whileTap={{ scale: 0.95 }}
+          className="mobile-action-button"
+          aria-label="Contact"
+        >
+          ✉️
+        </motion.a>
+
+        {/* Hamburger Menu Button */}
         <motion.button
           whileTap={{ scale: 0.95 }}
           whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
