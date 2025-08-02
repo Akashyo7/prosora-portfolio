@@ -31,6 +31,13 @@ const BlogSection = () => {
             publishedDate: post.publishedDate,
             tags: post.tags
           });
+          
+          // Detailed cover image debugging
+          if (post.coverImage) {
+            console.log(`🖼️ Cover image for "${post.title}":`, post.coverImage);
+          } else {
+            console.log(`❌ No cover image for "${post.title}"`);
+          }
         });
         
         setPosts(blogPosts);
@@ -189,6 +196,7 @@ const BlogSection = () => {
                                         }}
                                         onError={(e) => {
                                           console.error('❌ Cover image failed to load:', post.coverImage);
+                                          console.error('❌ Image error details:', e);
                                           e.target.style.display = 'none';
                                           e.target.parentElement.innerHTML = `
                                             <div class="blog-image-placeholder">

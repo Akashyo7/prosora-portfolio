@@ -163,6 +163,13 @@ class NotionBlogService {
     const excerpt = this.extractText(properties.Excerpt) || '';
     const publishedDate = properties['Published Date']?.date?.start || page.created_time;
     
+    // Debug cover image extraction
+    console.log(`🔍 Parsing post: "${title}"`);
+    console.log('📋 Raw page cover data:', page.cover);
+    
+    const coverImage = this.extractCoverImage(page);
+    console.log('🖼️ Extracted cover image:', coverImage);
+    
     return {
       id: page.id,
       title: title,
@@ -172,14 +179,14 @@ class NotionBlogService {
       tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
       status: properties.Status?.select?.name || 'Published',
       slug: this.createSlug(title),
-      coverImage: this.extractCoverImage(page),
+      coverImage: coverImage,
       url: page.url,
       author: {
         name: 'Prosora',
         avatar: null
       },
       // Map to BlogSection expected properties
-      featuredImage: this.extractCoverImage(page),
+      featuredImage: coverImage,
       date: publishedDate,
       readTime: '5 min read' // Default read time
     };
