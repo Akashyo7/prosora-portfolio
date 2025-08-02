@@ -319,6 +319,16 @@
   overflow: visible; /* Ensure buttons are always visible */
 }
 
+/* Ensure mobile actions are hidden on desktop */
+@media screen and (min-width: 1024px) {
+  .mobile-actions-row,
+  .mobile-text-btn,
+  .mobile-music-btn,
+  .mobile-hamburger-btn {
+    display: none !important;
+  }
+}
+
 /* Mobile Text Buttons - Spotify Style */
 .mobile-text-btn {
   display: inline-flex;
