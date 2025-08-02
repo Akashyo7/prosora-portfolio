@@ -7,7 +7,7 @@ import StorySection from './components/sections/StorySection';
 import WorkSection from './components/sections/WorkSection';
 import TimelineSection from './components/sections/TimelineSection';
 import ContactSection from './components/sections/ContactSection';
-import BlogSection from './components/blog/BlogSection';
+import BlogRouter from './components/blog/BlogRouter';
 
 import { MusicProvider } from './contexts/MusicContext';
 import { initAnalytics } from './utils/analytics.js';
@@ -54,8 +54,8 @@ function App() {
         {/* Timeline Section - Interactive with animations */}
         <TimelineSection />
 
-        {/* Blog Section - Notion-powered blog system */}
-        <BlogSection />
+        {/* Blog Section - Internal blog system with routing */}
+        <BlogRouter />
 
         {/* Contact Section - Enhanced with animations */}
         <ContactSection />

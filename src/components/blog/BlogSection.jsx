@@ -5,7 +5,7 @@ import notionBlogService from '../../services/notionBlogService.js';
 import { getAccessibleVariants } from '../../utils/accessibility.js';
 import './BlogSection.css';
 
-const BlogSection = () => {
+const BlogSection = ({ onPostClick }) => {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -176,11 +176,10 @@ const BlogSection = () => {
                         <>
                           {currentPosts.map((post) => (
                             <div key={post.id} className="blog-card">
-                              <a
-                                href={post.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="blog-card-link block group"
+                              <button
+                                onClick={() => onPostClick && onPostClick(post.slug)}
+                                className="blog-card-link block group w-full text-left"
+                                style={{ background: 'none', border: 'none', padding: 0 }}
                               >
                                 {/* Blog Post Image Container */}
                                 <div className="blog-image-container">
@@ -236,7 +235,7 @@ const BlogSection = () => {
                                     Read More →
                                   </div>
                                 </div>
-                              </a>
+                              </button>
                             </div>
                           ))}
                           
