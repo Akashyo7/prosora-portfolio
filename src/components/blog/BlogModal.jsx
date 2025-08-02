@@ -13,6 +13,22 @@ const BlogModal = ({ post, isOpen, onClose }) => {
   const [content, setContent] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Ensure we have a valid Notion URL
+  const getNotionUrl = (post) => {
+    if (!post) return '#';
+    
+    // Check if post.url is a valid Notion URL
+    if (post.url && post.url.includes('notion.so')) {
+      return post.url;
+    }
+    
+    // Generate Notion URL from post ID
+    const cleanId = post.id.replace(/-/g, '');
+    return `https://www.notion.so/${cleanId}`;
+  };
+
+  const notionUrl = getNotionUrl(post);
+
   useEffect(() => {
     if (isOpen && post) {
       loadContent();
@@ -23,6 +39,7 @@ const BlogModal = ({ post, isOpen, onClose }) => {
     try {
       setLoading(true);
       console.log('🔄 Loading content for:', post.title);
+      console.log('🔗 Post URL:', post.url);
       
       const postContent = await notionBlogService.fetchPostContent(post.id);
       setContent(postContent);
@@ -73,7 +90,7 @@ const BlogModal = ({ post, isOpen, onClose }) => {
             
             <div className="blog-modal-actions">
               <a
-                href={post.url}
+                href={notionUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="open-notion-btn"
@@ -105,7 +122,7 @@ const BlogModal = ({ post, isOpen, onClose }) => {
                   <div className="blog-modal-read-more">
                     <p>This is a preview of the blog post.</p>
                     <a
-                      href={post.url}
+                      href={notionUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="read-full-notion-btn"
@@ -122,7 +139,7 @@ const BlogModal = ({ post, isOpen, onClose }) => {
                   <h3>📖 Read Full Post</h3>
                   <p>{post.excerpt}</p>
                   <a
-                    href={post.url}
+                    href={notionUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="read-full-notion-btn"
