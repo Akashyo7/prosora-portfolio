@@ -8,6 +8,7 @@ import WorkSection from './components/sections/WorkSection';
 import TimelineSection from './components/sections/TimelineSection';
 import ContactSection from './components/sections/ContactSection';
 import BlogSection from './components/blog/BlogSection';
+
 import { MusicProvider } from './contexts/MusicContext';
 import { initAnalytics } from './utils/analytics.js';
 import { initPerformanceMonitoring } from './utils/performance.js';
