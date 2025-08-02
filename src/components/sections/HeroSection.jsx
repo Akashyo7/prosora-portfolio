@@ -295,14 +295,14 @@ const HeroSection = () => {
               transition={shouldDisableAnimations ? { duration: 0 } : { delay: 1.5, duration: 2.5, ease: [0.25, 0.46, 0.45, 0.94] }}
             />
 
-            {/* Left Vertical Line - From top of left headphone cup to navbar */}
+            {/* Left Vertical Line - From navbar to headphone cup */}
             <motion.div
               style={{
                 position: 'absolute',
-                top: '-160px', // Start from navbar area
+                top: '-240px', // Extended to reach navbar (80px padding + 160px previous = 240px total)
                 left: `calc(-1 * var(--headphone-position-offset, 520px) + 60px)`, // Positioned at inner edge of left cup
                 width: '2px', // Thinner, more elegant bar
-                height: `calc(240px * var(--headphone-scale, 1))`, // Height to reach exactly the top of headphone cup
+                height: `calc(320px * var(--headphone-scale, 1))`, // Extended height to connect to navbar
                 background: 'linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7), rgba(0,0,0,0.5))',
                 borderRadius: '1px',
                 filter: 'blur(0.3px)',
@@ -323,10 +323,10 @@ const HeroSection = () => {
                 <motion.div
                   style={{
                     position: 'absolute',
-                    top: '-160px',
+                    top: '-240px', // Updated to match new bar position
                     left: `calc(-1 * var(--headphone-position-offset, 520px) + 59px)`, // Aligned with inner edge bar position
                     width: '2px', // Matching the thinner bar width
-                    height: `calc(240px * var(--headphone-scale, 1))`, // Matching the new bar height
+                    height: `calc(320px * var(--headphone-scale, 1))`, // Matching the new extended bar height
                     background: isPlaying && !isMuted
                       ? 'linear-gradient(180deg, rgba(34, 197, 94, 0.06), rgba(34, 197, 94, 0.03), rgba(0,0,0,0.02))' // Subtle green tint when playing
                       : 'linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.05), rgba(0,0,0,0.02))',
@@ -350,14 +350,14 @@ const HeroSection = () => {
               </>
             )}
 
-            {/* Right Vertical Line - From top of right headphone cup to navbar */}
+            {/* Right Vertical Line - From navbar to headphone cup */}
             <motion.div
               style={{
                 position: 'absolute',
-                top: '-160px', // Start from navbar area
+                top: '-240px', // Extended to reach navbar (80px padding + 160px previous = 240px total)
                 right: `calc(-1 * var(--headphone-position-offset, 520px) + 60px)`, // Positioned at inner edge of right cup
                 width: '2px', // Thinner, more elegant bar
-                height: `calc(240px * var(--headphone-scale, 1))`, // Height to reach exactly the top of headphone cup
+                height: `calc(320px * var(--headphone-scale, 1))`, // Extended height to connect to navbar
                 background: 'linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7), rgba(0,0,0,0.5))',
                 borderRadius: '1px',
                 filter: 'blur(0.3px)',
@@ -378,10 +378,10 @@ const HeroSection = () => {
                 <motion.div
                   style={{
                     position: 'absolute',
-                    top: '-160px',
+                    top: '-240px', // Updated to match new bar position
                     right: `calc(-1 * var(--headphone-position-offset, 520px) + 59px)`, // Aligned with inner edge bar position
                     width: '2px', // Matching the thinner bar width
-                    height: `calc(240px * var(--headphone-scale, 1))`, // Matching the new bar height
+                    height: `calc(320px * var(--headphone-scale, 1))`, // Matching the new extended bar height
                     background: isPlaying && !isMuted
                       ? 'linear-gradient(180deg, rgba(34, 197, 94, 0.06), rgba(34, 197, 94, 0.03), rgba(0,0,0,0.02))' // Subtle green tint when playing
                       : 'linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.05), rgba(0,0,0,0.02))',
