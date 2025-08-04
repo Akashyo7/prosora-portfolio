@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, Tag, ArrowRight } from 'lucide-react';
-import notionBlogService from '../../services/notionBlogService.js';
+import simpleBlogService from '../../services/simpleBlogService.js';
 import { getAccessibleVariants } from '../../utils/accessibility.js';
 import BlogModal from './BlogModal.jsx';
 import './BlogSection.css';
@@ -21,7 +21,7 @@ const BlogSection = () => {
         setLoading(true);
         console.log('🔄 Loading blog posts from Notion...');
         
-        const blogPosts = await notionBlogService.fetchPosts(6);
+        const blogPosts = await simpleBlogService.fetchPosts();
         console.log('✅ Blog posts loaded:', blogPosts.length, 'posts');
         console.log('📝 Posts data:', blogPosts);
         

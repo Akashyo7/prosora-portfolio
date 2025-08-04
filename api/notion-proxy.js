@@ -1,60 +1,102 @@
 /**
- * Vercel Serverless Function - Notion API Proxy
- * Handles CORS issues by proxying requests to Notion API
+ * Notion API Proxy - Specific for Blog Posts
+ * Handles CORS and returns formatted blog posts
  */
 
 export default async function handler(req, res) {
-  // Enable CORS
+  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  // Handle preflight requests
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { method, body } = req;
-    const { endpoint } = req.query;
+    // Get environment variables
+    const notionToken = process.env.NOTION_TOKEN;
+    const databaseId = process.env.NOTION_DATABASE_ID;
 
-    if (!endpoint) {
-      return res.status(400).json({ error: 'Missing endpoint parameter' });
+    if (!notionToken || !databaseId) {
+      return res.status(500).json({ 
+        error: 'Missing environment variables',
+        details: 'NOTION_TOKEN and NOTION_DATABASE_ID must be set'
+      });
     }
 
-    const notionToken = process.env.VITE_NOTION_TOKEN;
-    if (!notionToken) {
-      return res.status(500).json({ error: 'Notion token not configured' });
-    }
+    console.log('🔄 Fetching from Notion database:', databaseId);
 
-    const notionUrl = `https://api.notion.com/v1/${endpoint}`;
-    
-    const response = await fetch(notionUrl, {
-      method: method,
+    // Query Notion database
+    const response = await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
+      method: 'POST',
       headers: {
         'Authorization': `Bearer ${notionToken}`,
+        'Content-Type': 'application/json',
         'Notion-Version': '2022-06-28',
-        'Content-Type': 'application/json'
       },
-      body: method === 'POST' ? JSON.stringify(body) : undefined
+      body: JSON.stringify({
+        filter: {
+          property: 'Status',
+          select: {
+            equals: 'Published'
+          }
+        },
+        sorts: [
+          {
+            property: 'Published Date',
+            direction: 'descending'
+          }
+        ]
+      })
     });
 
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Notion API error:', response.status, errorText);
-      return res.status(response.status).json({ 
+      return res.status(response.status).json({
         error: `Notion API error: ${response.status}`,
         details: errorText
       });
     }
 
     const data = await response.json();
-    res.status(200).json(data);
+    console.log('✅ Notion API response received, processing posts...');
+
+    // Transform Notion data to blog post format
+    const posts = data.results.map(page => {
+      const properties = page.properties;
+      
+      return {
+        id: page.id,
+        title: properties.Title?.title?.[0]?.plain_text || 'Untitled',
+        excerpt: properties.Excerpt?.rich_text?.[0]?.plain_text || '',
+        publishedDate: properties['Published Date']?.date?.start || new Date().toISOString(),
+        tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
+        url: page.url,
+        coverImage: page.cover?.external?.url || page.cover?.file?.url || null,
+        lastEditedTime: page.last_edited_time
+      };
+    });
+
+    console.log(`✅ Processed ${posts.length} blog posts`);
+
+    // Add cache headers
+    res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
+
+    return res.status(200).json({
+      posts: posts,
+      total: posts.length,
+      lastUpdated: new Date().toISOString()
+    });
 
   } catch (error) {
-    console.error('Proxy error:', error);
-    res.status(500).json({ 
+    console.error('❌ Proxy error:', error);
+    return res.status(500).json({
       error: 'Internal server error',
       details: error.message
     });
