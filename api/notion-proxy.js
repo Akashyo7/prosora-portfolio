@@ -22,10 +22,22 @@ export default async function handler(req, res) {
     const notionToken = process.env.NOTION_TOKEN;
     const databaseId = process.env.NOTION_DATABASE_ID;
 
+    // Debug environment variables (without exposing full tokens)
+    console.log('🔍 Environment check:');
+    console.log('- NOTION_TOKEN exists:', !!notionToken);
+    console.log('- NOTION_TOKEN starts with:', notionToken ? notionToken.substring(0, 10) + '...' : 'undefined');
+    console.log('- NOTION_DATABASE_ID exists:', !!databaseId);
+    console.log('- NOTION_DATABASE_ID:', databaseId);
+
     if (!notionToken || !databaseId) {
       return res.status(500).json({ 
         error: 'Missing environment variables',
-        details: 'NOTION_TOKEN and NOTION_DATABASE_ID must be set'
+        details: 'NOTION_TOKEN and NOTION_DATABASE_ID must be set',
+        debug: {
+          hasToken: !!notionToken,
+          hasDatabase: !!databaseId,
+          tokenStart: notionToken ? notionToken.substring(0, 10) + '...' : 'undefined'
+        }
       });
     }
 
@@ -40,15 +52,10 @@ export default async function handler(req, res) {
         'Notion-Version': '2022-06-28',
       },
       body: JSON.stringify({
-        filter: {
-          property: 'Status',
-          select: {
-            equals: 'Published'
-          }
-        },
+        // Remove filter temporarily to see all pages
         sorts: [
           {
-            property: 'Published Date',
+            property: 'Created',
             direction: 'descending'
           }
         ]
@@ -65,7 +72,28 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    console.log('✅ Notion API response received, processing posts...');
+    console.log('✅ Notion API response received');
+    console.log('📊 Raw response data:', JSON.stringify(data, null, 2));
+    console.log('📝 Results count:', data.results?.length || 0);
+
+    // If no results, let's see what we got
+    if (!data.results || data.results.length === 0) {
+      console.log('⚠️ No results found in Notion response');
+      return res.status(200).json({
+        posts: [],
+        total: 0,
+        lastUpdated: new Date().toISOString(),
+        debug: {
+          rawResponse: data,
+          message: 'No results found - check database sharing and filters'
+        }
+      });
+    }
+
+    // Log first page properties to understand structure
+    if (data.results[0]) {
+      console.log('🔍 First page properties:', Object.keys(data.results[0].properties || {}));
+    }
 
     // Transform Notion data to blog post format
     const posts = data.results.map(page => {
