@@ -52,10 +52,15 @@ export default async function handler(req, res) {
         'Notion-Version': '2022-06-28',
       },
       body: JSON.stringify({
-        // Remove filter temporarily to see all pages
+        filter: {
+          property: 'Status',
+          select: {
+            equals: 'Published'
+          }
+        },
         sorts: [
           {
-            property: 'Created',
+            property: 'Date',
             direction: 'descending'
           }
         ]
@@ -103,7 +108,7 @@ export default async function handler(req, res) {
         id: page.id,
         title: properties.Title?.title?.[0]?.plain_text || 'Untitled',
         excerpt: properties.Excerpt?.rich_text?.[0]?.plain_text || '',
-        publishedDate: properties['Published Date']?.date?.start || new Date().toISOString(),
+        publishedDate: properties.Date?.date?.start || new Date().toISOString(),
         tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
         url: page.url,
         coverImage: page.cover?.external?.url || page.cover?.file?.url || null,
