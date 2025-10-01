@@ -142,7 +142,21 @@ const Header = () => {
           <motion.a
             key={item.name}
             href={item.href}
-            onClick={item.external ? undefined : (e) => handleSmoothScroll(e, item.href)}
+            onClick={(e) => {
+              if (item.external) {
+                // Defensive: force open in new tab to avoid any SPA intercept/caching quirks
+                e.preventDefault();
+                try {
+                  window.open(item.href, '_blank', 'noopener');
+                } catch (_) {
+                  // Fallback: navigate in same tab
+                  window.location.href = item.href;
+                }
+                setIsMobileMenuOpen(false);
+              } else {
+                handleSmoothScroll(e, item.href);
+              }
+            }}
             target={item.external ? "_blank" : undefined}
             rel={item.external ? "noopener noreferrer" : undefined}
             whileHover={{ y: -2 }}
@@ -302,7 +316,19 @@ const Header = () => {
                   <motion.a
                     key={item.name}
                     href={item.href}
-                    onClick={item.external ? undefined : (e) => handleSmoothScroll(e, item.href)}
+                    onClick={(e) => {
+                      if (item.external) {
+                        e.preventDefault();
+                        try {
+                          window.open(item.href, '_blank', 'noopener');
+                        } catch (_) {
+                          window.location.href = item.href;
+                        }
+                        setIsMobileMenuOpen(false);
+                      } else {
+                        handleSmoothScroll(e, item.href);
+                      }
+                    }}
                     target={item.external ? "_blank" : undefined}
                     rel={item.external ? "noopener noreferrer" : undefined}
                     initial={{ opacity: 0, y: 20 }}
