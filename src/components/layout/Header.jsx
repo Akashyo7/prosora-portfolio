@@ -147,8 +147,8 @@ const Header = () => {
                 handleSmoothScroll(e, item.href);
               }
             }}
-            target={undefined}
-            rel={undefined}
+            target={item.external ? "_blank" : undefined}
+            rel={item.external ? "noopener noreferrer" : undefined}
             whileHover={{ y: -2 }}
             className={`link-block inline-block relative transition-colors duration-200 ${
               activeSection === item.name.replace('my ', '') 
@@ -313,8 +313,8 @@ const Header = () => {
                         setIsMobileMenuOpen(false);
                       }
                     }}
-                    target={undefined}
-                    rel={undefined}
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noopener noreferrer" : undefined}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 + index * 0.1 }}
