@@ -79,7 +79,7 @@ const Header = () => {
     { name: 'about', href: '#about' },
     { name: 'my story', href: '#story' },
     { name: 'timeline', href: '#timeline' },
-    { name: 'blog', href: '#blog' },
+    { name: 'blog', href: 'https://prosora.blog', external: true },
     { name: 'contact', href: '#contact' },
   ];
 
@@ -142,7 +142,9 @@ const Header = () => {
           <motion.a
             key={item.name}
             href={item.href}
-            onClick={(e) => handleSmoothScroll(e, item.href)}
+            onClick={item.external ? undefined : (e) => handleSmoothScroll(e, item.href)}
+            target={item.external ? "_blank" : undefined}
+            rel={item.external ? "noopener noreferrer" : undefined}
             whileHover={{ y: -2 }}
             className={`link-block inline-block relative transition-colors duration-200 ${
               activeSection === item.name.replace('my ', '') 
@@ -300,7 +302,9 @@ const Header = () => {
                   <motion.a
                     key={item.name}
                     href={item.href}
-                    onClick={(e) => handleSmoothScroll(e, item.href)}
+                    onClick={item.external ? undefined : (e) => handleSmoothScroll(e, item.href)}
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noopener noreferrer" : undefined}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 + index * 0.1 }}

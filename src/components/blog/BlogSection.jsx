@@ -1,313 +1,252 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Clock, Tag, ArrowRight } from 'lucide-react';
-import simpleBlogService from '../../services/simpleBlogService.js';
-import { getAccessibleVariants } from '../../utils/accessibility.js';
-import BlogModal from './BlogModal.jsx';
+import { ExternalLink } from 'lucide-react';
+import ghostBlogService from '../../services/ghostBlogService.js';
 import './BlogSection.css';
 
 const BlogSection = () => {
   const [posts, setPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [selectedPost, setSelectedPost] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Load blog posts
+  // Load blog posts from Ghost
   useEffect(() => {
     const loadPosts = async () => {
       try {
         setLoading(true);
-        console.log('🔄 Loading blog posts from Notion...');
+        console.log('🔄 Loading blog posts from Ghost...');
         
-        const blogPosts = await simpleBlogService.fetchPosts();
-        console.log('✅ Blog posts loaded:', blogPosts.length, 'posts');
-        console.log('📝 Posts data:', blogPosts);
-        
-        // Log successful blog loading and URLs for debugging
-        console.log(`✅ Successfully loaded ${blogPosts.length} blog posts from Notion`);
-        blogPosts.forEach(post => {
-          console.log(`🔗 Post "${post.title}" URL:`, post.url);
-        });
+        const blogPosts = await ghostBlogService.fetchLatestPosts();
+        console.log('✅ Ghost blog posts loaded:', blogPosts.length, 'posts');
         
         setPosts(blogPosts);
-        setFilteredPosts(blogPosts);
       } catch (error) {
-        console.error('❌ Failed to load blog posts:', error);
-        console.error('Error details:', error.message, error.stack);
+        console.error('❌ Failed to load Ghost blog posts:', error);
         
-        // Set empty array on error to show "no posts" message
-        setPosts([]);
-        setFilteredPosts([]);
+        // Use fallback posts on error
+        const fallbackPosts = ghostBlogService.getFallbackPosts();
+        setPosts(fallbackPosts);
       } finally {
         setLoading(false);
-        console.log('🏁 Blog loading completed');
+        console.log('🏁 Ghost blog loading completed');
       }
     };
 
     loadPosts();
   }, []);
 
-  // Auto-play functionality - simple and clean
+  // Simple navigation - pairs of posts (matching WorkSection exactly)
+  const totalSlides = Math.ceil(posts.length / 2);
+  
+  // Auto-play functionality - matching WorkSection exactly
   useEffect(() => {
-    if (filteredPosts.length <= 2) return;
-    
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % Math.ceil(filteredPosts.length / 2));
+      setCurrentSlide((prev) => (prev + 1) % totalSlides);
     }, 5000);
     
     return () => clearInterval(interval);
-  }, [filteredPosts.length]);
+  }, [totalSlides]);
 
-  // Animation variants
-  const containerVariants = getAccessibleVariants({
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
-  });
-
-  const itemVariants = getAccessibleVariants({
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
-    }
-  });
-
-  const cardVariants = getAccessibleVariants({
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.5, ease: "easeOut" }
-    }
-  });
-
-  if (loading) {
-    return (
-      <section id="blog" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading blog posts...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // Debug: Always show posts count
-  console.log('🔍 Blog render - Posts:', posts.length, 'Filtered:', filteredPosts.length, 'Loading:', loading);
+  const goToSlide = (slideIndex) => {
+    setCurrentSlide(slideIndex);
+  };
 
   return (
     <>
-      {/* Blog Header Section - matching original structure */}
+      {/* Blog Header Section - matching WorkSection structure exactly */}
       <section id="blog" className="h2---section---about">
         <motion.a 
-          href="#"
-          className="h2---link-block w-inline-block block text-center py-16"
+          href="https://prosora.blog"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="h2---link-block w-inline-block"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
           <motion.h2 
-            className="h2---text text-black mb-6"
+            className="h2---text"
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.3 }}
           >
             blog<span style={{ color: '#f8cb74' }}>.</span>
           </motion.h2>
           <div className="h2---o about">
-            <p className="paragraph font-medium" style={{ color: '#f8cb74' }}>
+            <p className="paragraph">
               Insights on product management, strategy, and my professional journey
             </p>
           </div>
         </motion.a>
       </section>
 
-      {/* Blog Content Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-
-          {/* Blog Posts - Work Section Style */}
-          <div className="blog-container relative">
+      {/* Blog Content Section - matching WorkSection structure exactly */}
+      <section className="blog">
+        <div className="w-layout-cell">
+          {/* Layered Structure - Background + Cards + Navigation (matching WorkSection exactly) */}
+          <div className="blog-container">
             {/* Background Layer */}
-            <div className="blog-background absolute inset-0 -z-10"></div>
+            <div className="blog-background"></div>
             
-            {/* Blog Cards Layer - Work Section Style */}
-            <div className="blog-cards-container max-w-7xl mx-auto px-4 py-12">
-              {filteredPosts.length === 0 ? (
+            {/* Cards Layer - Uniform Structure with Smart Placeholder */}
+            <div className="blog-cards-container">
+              {loading ? (
                 <div className="text-center py-12">
-                  <p className="text-gray-600 text-lg">No blog posts found.</p>
-                  <p className="text-gray-500 mt-2">Check back soon for insights and updates!</p>
-                  <p className="text-red-500 mt-2">Debug: Posts array length: {posts.length}</p>
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  <p className="mt-4 text-gray-600">Loading latest posts...</p>
+                </div>
+              ) : posts.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-600">No blog posts available at the moment.</p>
+                  <a 
+                    href="https://prosora.blog" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center mt-4 text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    Visit Blog <ExternalLink className="w-4 h-4 ml-1" />
+                  </a>
                 </div>
               ) : (
-                <>
-                  <div className="blog-grid grid grid-cols-2 gap-6 md:gap-8 lg:gap-12">
-                    {(() => {
-                      const currentPosts = filteredPosts.slice(currentSlide * 2, currentSlide * 2 + 2);
-                      const needsPlaceholder = currentPosts.length === 1;
-                      
-                      return (
-                        <>
-                          {currentPosts.map((post) => (
-                            <div key={post.id} className="blog-card">
-                              <button
-                                onClick={() => {
-                                  setSelectedPost(post);
-                                  setIsModalOpen(true);
-                                }}
-                                className="blog-card-link block group w-full text-left"
-                                style={{ background: 'none', border: 'none', padding: 0 }}
-                              >
-                                {/* Blog Post Image Container */}
-                                <div className="blog-image-container">
-                                  <div className="blog-image-wrapper">
-                                    {post.coverImage ? (
-                                      <img
-                                        src={post.coverImage}
-                                        alt={post.title}
-                                        className="blog-image"
-                                        loading="lazy"
-                                        onLoad={() => {
-                                          // Image loaded successfully
-                                        }}
-                                        onError={(e) => {
-                                          // Replace with beautiful gradient placeholder
-                                          e.target.style.display = 'none';
-                                          e.target.parentElement.innerHTML = `
-                                            <div class="blog-image-placeholder blog-gradient-placeholder">
-                                              <div class="placeholder-content">
-                                                <div class="placeholder-icon">📖</div>
-                                                <div class="placeholder-text">${post.title.substring(0, 20)}...</div>
-                                              </div>
-                                            </div>
-                                          `;
-                                        }}
-                                      />
-                                    ) : (
-                                      <div className="blog-image-placeholder blog-gradient-placeholder">
-                                        <div className="placeholder-content">
-                                          <div className="placeholder-icon">📖</div>
-                                          <div className="placeholder-text">{post.title.substring(0, 20)}...</div>
-                                          <div className="placeholder-subtitle">Read on Notion</div>
+                <div className="blog-grid grid grid-cols-2 gap-6 md:gap-8 lg:gap-12">
+                  {(() => {
+                    const currentPosts = posts.slice(currentSlide * 2, currentSlide * 2 + 2);
+                    const needsPlaceholder = currentPosts.length === 1;
+                    
+                    return (
+                      <>
+                        {currentPosts.map((post) => (
+                          <div key={post.id} className="blog-card">
+                            <a
+                              href={post.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="blog-card-link block group"
+                            >
+                              {/* Uniform Image Container */}
+                              <div className="blog-image-container">
+                                <div className="blog-image-wrapper">
+                                  <img
+                                    src={post.feature_image}
+                                    alt={post.title}
+                                    className="blog-image"
+                                    loading="lazy"
+                                    onLoad={() => {
+                                      console.log('✅ Blog image loaded successfully:', post.title);
+                                    }}
+                                    onError={(e) => {
+                                      console.log('❌ Blog image failed to load:', post.title);
+                                      
+                                      // Show placeholder immediately
+                                      e.target.style.display = 'none';
+                                      e.target.parentElement.innerHTML = `
+                                        <div class="blog-image-placeholder">
+                                          <div class="placeholder-content">
+                                            <div class="placeholder-icon">📝</div>
+                                            <div class="placeholder-text">${post.title}</div>
+                                          </div>
                                         </div>
-                                      </div>
-                                    )}
-                                  </div>
+                                      `;
+                                    }}
+                                  />
                                 </div>
-                                
-                                {/* Blog Post Info - Work Section Style */}
-                                <div className="blog-text-container">
-                                  <div className="blog-post-meta">
-                                    {post.tags[0] || 'BLOG POST'} • {new Date(post.publishedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                                  </div>
-                                  <div className="blog-post-title">
-                                    "{post.title}"
-                                  </div>
-                                  {post.excerpt && (
-                                    <div className="blog-post-excerpt">
-                                      {post.excerpt.length > 60 
-                                        ? post.excerpt.substring(0, 60).trim() + '...' 
-                                        : post.excerpt
-                                      }
+                              </div>
+                              
+                              {/* Uniform Typography Container */}
+                              <div className="blog-text-container">
+                                <div className="blog-project-type">
+                                  {post.primary_tag?.name || 'BLOG POST'}
+                                </div>
+                                <div className="blog-project-title">
+                                  "{post.title}"
+                                </div>
+                              </div>
+                            </a>
+                          </div>
+                        ))}
+                        
+                        {/* Smart Placeholder Card - Only when needed */}
+                        {needsPlaceholder && (
+                          <div className="blog-card blog-placeholder-card">
+                            <div className="blog-card-link block group cursor-default">
+                              {/* Placeholder Image Container */}
+                              <div className="blog-image-container">
+                                <div className="blog-image-wrapper">
+                                  <div className="blog-image-placeholder blog-smart-placeholder">
+                                    <div className="placeholder-content">
+                                      <div className="placeholder-icon">✍️</div>
+                                      <div className="placeholder-text">More Coming Soon</div>
                                     </div>
-                                  )}
-                                  <div className="blog-read-more blog-notion-link">
-                                    <span>Read Full Post</span>
-                                    <span className="notion-badge">on Notion →</span>
-                                  </div>
-                                </div>
-                              </button>
-                            </div>
-                          ))}
-                          
-                          {/* Smart Placeholder Card - Only when needed */}
-                          {needsPlaceholder && (
-                            <div className="blog-card blog-placeholder-card">
-                              <div className="blog-card-link block group cursor-default">
-                                {/* Placeholder Image Container */}
-                                <div className="blog-image-container">
-                                  <div className="blog-image-wrapper">
-                                    <div className="blog-image-placeholder blog-smart-placeholder">
-                                      <div className="placeholder-content">
-                                        <div className="placeholder-icon">✍️</div>
-                                        <div className="placeholder-text">New Posts Coming</div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                
-                                {/* Placeholder Typography Container */}
-                                <div className="blog-text-container">
-                                  <div className="blog-post-meta blog-placeholder-meta">
-                                    UPCOMING POST • Soon
-                                  </div>
-                                  <div className="blog-post-title blog-placeholder-title">
-                                    "Stay Connected"
-                                  </div>
-                                  <div className="blog-post-excerpt blog-placeholder-excerpt">
-                                    More insights and stories on the way...
-                                  </div>
-                                  <div className="blog-read-more blog-placeholder-read-more">
-                                    Coming Soon
                                   </div>
                                 </div>
                               </div>
+                              
+                              {/* Placeholder Typography Container */}
+                              <div className="blog-text-container">
+                                <div className="blog-project-type blog-placeholder-type">
+                                  UPCOMING POST
+                                </div>
+                                <div className="blog-project-title blog-placeholder-title">
+                                  "Stay Tuned"
+                                </div>
+                              </div>
                             </div>
-                          )}
-                        </>
-                      );
-                    })()}
-                  </div>
-
-                  {/* Navigation Dots - Work Section Style */}
-                  {Math.ceil(filteredPosts.length / 2) > 1 && (
-                    <div className="blog-navigation">
-                      <div className="blog-dots-container">
-                        {Array.from({ length: Math.ceil(filteredPosts.length / 2) }).map((_, index) => (
-                          <button
-                            key={index}
-                            onClick={() => setCurrentSlide(index)}
-                            className={`blog-dot ${currentSlide === index ? 'blog-dot-active' : ''}`}
-                            aria-label={`Go to slide ${index + 1}`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </>
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
               )}
             </div>
+
+            {/* Descriptions Layer - Between Cards and Navigation */}
+            <div className="blog-descriptions">
+              <div className="blog-descriptions-container">
+                {(() => {
+                  const currentPosts = posts.slice(currentSlide * 2, currentSlide * 2 + 2);
+                  const needsPlaceholder = currentPosts.length === 1;
+                  
+                  return (
+                    <div className="blog-descriptions-grid">
+                      {currentPosts.map((post) => (
+                        <div key={`desc-${post.id}`} className="blog-description">
+                          <p className="blog-description-text">
+                            {post.excerpt || post.custom_excerpt || 'Discover insights and strategies that drive product success and professional growth.'}
+                          </p>
+                        </div>
+                      ))}
+                      
+                      {/* Smart Placeholder Description - Only when needed */}
+                      {needsPlaceholder && (
+                        <div className="blog-description blog-placeholder-description">
+                          <p className="blog-description-text blog-placeholder-description-text">
+                            More insights on product management, strategy, and professional growth coming soon.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+
+            {/* Navigation Layer - Small Elegant Dots */}
+            <div className="blog-navigation">
+              <div className="blog-dots-container">
+                {Array.from({ length: totalSlides }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`blog-dot ${currentSlide === index ? 'blog-dot-active' : ''}`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
-          </motion.div>
         </div>
       </section>
-
-      {/* Blog Modal */}
-      <BlogModal
-        post={selectedPost}
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedPost(null);
-        }}
-      />
     </>
   );
 };

@@ -72,6 +72,12 @@ export const sectionSEO = {
     url: '/#work',
     keywords: ['Case Studies', 'Product Analysis', 'Gaana', 'Shazam', 'OYO', 'Spotify']
   },
+  blog: {
+    title: 'Latest Blog Posts - Akash Yadav | Product & Strategy Insights',
+    description: 'Read the latest insights on product management, strategy, and professional growth from Akash Yadav. Visit prosora.blog for more articles.',
+    url: '/#blog',
+    keywords: ['Blog', 'Product Management Insights', 'Strategy Articles', 'Professional Growth', 'Prosora Blog']
+  },
   contact: {
     title: 'Contact Akash Yadav - Product & Strategy Professional',
     description: 'Get in touch with Akash Yadav for product management opportunities, collaborations, or professional discussions.',
@@ -222,10 +228,24 @@ export const generateTwitterTags = (seoData) => {
 /**
  * Generate all meta tags for a page
  * @param {Object} pageData - Page-specific SEO data
+ * @param {Array} blogPosts - Optional blog posts for structured data
  * @returns {Object} Complete meta tags configuration
  */
-export const generateMetaTags = (pageData = {}) => {
+export const generateMetaTags = (pageData = {}, blogPosts = []) => {
   const seoData = generateSEO(pageData);
+  
+  // Base structured data
+  const structuredData = [
+    generateStructuredData('Person'),
+    generateStructuredData('WebSite'),
+    generateStructuredData('Portfolio'),
+    generateBreadcrumbData(pageData.section)
+  ];
+
+  // Add blog structured data if blog posts are provided
+  if (blogPosts.length > 0) {
+    structuredData.push(generateBlogStructuredData(blogPosts));
+  }
   
   return {
     title: seoData.title,
@@ -241,7 +261,8 @@ export const generateMetaTags = (pageData = {}) => {
       { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
       { name: 'apple-mobile-web-app-title', content: seoData.siteName },
       ...generateOpenGraphTags(seoData),
-      ...generateTwitterTags(seoData)
+      ...generateTwitterTags(seoData),
+      ...generateCrossLinkingTags(seoData)
     ],
     link: [
       { rel: 'canonical', href: seoData.url },
@@ -249,20 +270,104 @@ export const generateMetaTags = (pageData = {}) => {
       { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
       { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
       { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
-      { rel: 'manifest', href: '/site.webmanifest' }
+      { rel: 'manifest', href: '/site.webmanifest' },
+      // Cross-linking between portfolio and blog
+      { rel: 'alternate', type: 'application/rss+xml', title: 'Prosora Blog RSS', href: 'https://prosora.blog/rss/' },
+      { rel: 'me', href: 'https://prosora.blog' }
     ],
-    structuredData: [
-      generateStructuredData('Person'),
-      generateStructuredData('WebSite'),
-      generateStructuredData('Portfolio')
-    ]
+    structuredData
   };
 };
 
 /**
- * Update document head with SEO meta tags
- * @param {Object} metaTags - Meta tags configuration
+ * Generate structured data for blog posts
+ * @param {Array} blogPosts - Array of blog post data
+ * @returns {Object} Blog-specific structured data
  */
+export const generateBlogStructuredData = (blogPosts = []) => {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'Prosora Blog - Product & Strategy Insights',
+    description: 'Professional insights on product management, strategy, and career growth by Akash Yadav',
+    url: 'https://prosora.blog',
+    author: {
+      '@type': 'Person',
+      name: 'Akash Yadav',
+      url: defaultSEO.url,
+      sameAs: [
+        'https://www.linkedin.com/in/aka-shy/',
+        'https://x.com/imakash_y'
+      ]
+    },
+    blogPost: blogPosts.slice(0, 6).map(post => ({
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt,
+      url: post.url,
+      datePublished: post.date,
+      author: {
+        '@type': 'Person',
+        name: 'Akash Yadav'
+      },
+      publisher: {
+        '@type': 'Person',
+        name: 'Akash Yadav'
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': post.url
+      },
+      keywords: post.tags?.join(', ') || 'Product Management, Strategy'
+    }))
+  };
+};
+
+/**
+ * Generate breadcrumb structured data for cross-linking
+ * @param {string} currentSection - Current section name
+ * @returns {Object} Breadcrumb structured data
+ */
+export const generateBreadcrumbData = (currentSection = 'home') => {
+  const breadcrumbItems = [
+    { name: 'Home', url: defaultSEO.url },
+    { name: 'Portfolio', url: `${defaultSEO.url}/#work` },
+    { name: 'Blog', url: 'https://prosora.blog' },
+    { name: 'About', url: `${defaultSEO.url}/#about` }
+  ];
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbItems.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url
+    }))
+  };
+};
+
+/**
+ * Generate cross-platform linking meta tags
+ * @param {Object} seoData - SEO configuration
+ * @returns {Array} Array of cross-linking meta tags
+ */
+export const generateCrossLinkingTags = (seoData) => {
+  return [
+    // Canonical linking between portfolio and blog
+    { name: 'blog-url', content: 'https://prosora.blog' },
+    { name: 'portfolio-url', content: defaultSEO.url },
+    
+    // Related content hints
+    { name: 'related-blog', content: 'https://prosora.blog' },
+    { name: 'related-portfolio', content: `${defaultSEO.url}/#work` },
+    
+    // Cross-platform verification
+    { name: 'author-blog', content: 'https://prosora.blog' },
+    { name: 'author-portfolio', content: defaultSEO.url }
+  ];
+};
 export const updateDocumentHead = (metaTags) => {
   // Update title
   document.title = metaTags.title;
