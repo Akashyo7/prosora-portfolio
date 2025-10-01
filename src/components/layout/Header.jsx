@@ -139,35 +139,46 @@ const Header = () => {
       {/* Desktop Navigation Tabs */}
       <div className="navbar_tabs hidden lg:flex items-center justify-center space-x-6">
         {navItems.map((item) => (
-          <motion.a
-            key={item.name}
-            href={item.href}
-            onClick={(e) => {
-              if (!item.external) {
-                handleSmoothScroll(e, item.href);
-              }
-            }}
-            target={item.external ? "_blank" : undefined}
-            rel={item.external ? "noopener noreferrer" : undefined}
-            whileHover={{ y: -2 }}
-            className={`link-block inline-block relative transition-colors duration-200 ${
-              activeSection === item.name.replace('my ', '') 
-                ? 'text-blue-400' 
-                : 'text-white hover:text-gray-300'
-            }`}
-          >
-            <div className="text-block px-2 py-1">
-              {item.name}
-            </div>
-            {activeSection === item.name.replace('my ', '') && (
-              <motion.div
-                layoutId="activeSection"
-                className="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-400"
-                initial={false}
-                transition={{ type: "spring", stiffness: 380, damping: 30 }}
-              />
-            )}
-          </motion.a>
+          item.external ? (
+            <a
+              key={item.name}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`link-block inline-block relative transition-colors duration-200 ${
+                activeSection === item.name.replace('my ', '') 
+                  ? 'text-blue-400' 
+                  : 'text-white hover:text-gray-300'
+              }`}
+            >
+              <div className="text-block px-2 py-1">{item.name}</div>
+              {activeSection === item.name.replace('my ', '') && (
+                <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-400" />
+              )}
+            </a>
+          ) : (
+            <motion.a
+              key={item.name}
+              href={item.href}
+              onClick={(e) => handleSmoothScroll(e, item.href)}
+              whileHover={{ y: -2 }}
+              className={`link-block inline-block relative transition-colors duration-200 ${
+                activeSection === item.name.replace('my ', '') 
+                  ? 'text-blue-400' 
+                  : 'text-white hover:text-gray-300'
+              }`}
+            >
+              <div className="text-block px-2 py-1">{item.name}</div>
+              {activeSection === item.name.replace('my ', '') && (
+                <motion.div
+                  layoutId="activeSection"
+                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-400"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+            </motion.a>
+          )
         ))}
         <motion.a
           href={resumeLink}
@@ -303,27 +314,31 @@ const Header = () => {
               {/* Navigation Links */}
               <nav className="mobile-menu-nav">
                 {navItems.map((item, index) => (
-                  <motion.a
-                    key={item.name}
-                    href={item.href}
-                    onClick={(e) => {
-                      if (!item.external) {
-                        handleSmoothScroll(e, item.href);
-                      } else {
-                        setIsMobileMenuOpen(false);
-                      }
-                    }}
-                    target={item.external ? "_blank" : undefined}
-                    rel={item.external ? "noopener noreferrer" : undefined}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 + index * 0.1 }}
-                    className={`${
-                      activeSection === item.name.replace('my ', '') ? 'active' : ''
-                    }`}
-                  >
-                    {item.name}
-                  </motion.a>
+                  item.external ? (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.name}
+                    </a>
+                  ) : (
+                    <motion.a
+                      key={item.name}
+                      href={item.href}
+                      onClick={(e) => handleSmoothScroll(e, item.href)}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 + index * 0.1 }}
+                      className={`${
+                        activeSection === item.name.replace('my ', '') ? 'active' : ''
+                      }`}
+                    >
+                      {item.name}
+                    </motion.a>
+                  )
                 ))}
                 <motion.a
                   href={resumeLink}
