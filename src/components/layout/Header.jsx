@@ -79,7 +79,7 @@ const Header = () => {
     { name: 'about', href: '#about' },
     { name: 'my story', href: '#story' },
     { name: 'timeline', href: '#timeline' },
-    { name: 'blog', href: 'https://prosora.blog', external: true },
+    { name: 'blog', href: 'https://www.prosora.blog/', external: true },
     { name: 'contact', href: '#contact' },
   ];
 
