@@ -82,3 +82,8 @@ export const navItems = [
 
 // Resume link
 export const resumeLink = '/CV_Akash_2025.pdf';
+
+// Blog embed feature flag
+// Set to false to hide blog cards/grid and skip Ghost fetches.
+// Flip to true to re-enable embedded posts without code changes.
+export const BLOG_EMBED_ENABLED = false;
