@@ -144,14 +144,9 @@ const Header = () => {
             href={item.href}
             onClick={(e) => {
               if (item.external) {
-                // Defensive: force open in new tab to avoid any SPA intercept/caching quirks
+                // Reliability-first: navigate in same tab to avoid any blockers
                 e.preventDefault();
-                try {
-                  window.open(item.href, '_blank', 'noopener');
-                } catch (_) {
-                  // Fallback: navigate in same tab
-                  window.location.href = item.href;
-                }
+                window.location.assign(item.href);
                 setIsMobileMenuOpen(false);
               } else {
                 handleSmoothScroll(e, item.href);
@@ -319,11 +314,7 @@ const Header = () => {
                     onClick={(e) => {
                       if (item.external) {
                         e.preventDefault();
-                        try {
-                          window.open(item.href, '_blank', 'noopener');
-                        } catch (_) {
-                          window.location.href = item.href;
-                        }
+                        window.location.assign(item.href);
                         setIsMobileMenuOpen(false);
                       } else {
                         handleSmoothScroll(e, item.href);
