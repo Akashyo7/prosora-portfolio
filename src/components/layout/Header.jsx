@@ -143,17 +143,12 @@ const Header = () => {
             key={item.name}
             href={item.href}
             onClick={(e) => {
-              if (item.external) {
-                // Reliability-first: navigate in same tab to avoid any blockers
-                e.preventDefault();
-                window.location.assign(item.href);
-                setIsMobileMenuOpen(false);
-              } else {
+              if (!item.external) {
                 handleSmoothScroll(e, item.href);
               }
             }}
-            target={item.external ? "_blank" : undefined}
-            rel={item.external ? "noopener noreferrer" : undefined}
+            target={undefined}
+            rel={undefined}
             whileHover={{ y: -2 }}
             className={`link-block inline-block relative transition-colors duration-200 ${
               activeSection === item.name.replace('my ', '') 
@@ -312,16 +307,14 @@ const Header = () => {
                     key={item.name}
                     href={item.href}
                     onClick={(e) => {
-                      if (item.external) {
-                        e.preventDefault();
-                        window.location.assign(item.href);
-                        setIsMobileMenuOpen(false);
-                      } else {
+                      if (!item.external) {
                         handleSmoothScroll(e, item.href);
+                      } else {
+                        setIsMobileMenuOpen(false);
                       }
                     }}
-                    target={item.external ? "_blank" : undefined}
-                    rel={item.external ? "noopener noreferrer" : undefined}
+                    target={undefined}
+                    rel={undefined}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 + index * 0.1 }}
